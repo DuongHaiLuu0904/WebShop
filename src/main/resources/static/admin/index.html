@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:fragment="dynamic(main)">
+
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+    <title>Julie - Admin Dashboard</title>
+    <link rel="shortcut icon" href="/assetss/img/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="/assetss/css/style.css">
+</head>
+
+<body class="fixed-left" ng-app="admin-app">
+<div id="preloader">
+    <div id="status">
+        <div class="spinner"></div>
+    </div>
+</div>
+<div id="wrapper">
+    <div ng-include="'/admin/_sidebar.html'"></div>
+    <div class="content-page">
+        <div class="content">
+            <div ng-include="'/admin/_topbar.html'"></div>
+            <div class="ng-view"></div>
+        </div>
+        <footer class="footer">
+            Copyright © 2024 <b>Julie</b>. All rights reserved.
+        </footer>
+    </div>
+</div>
+
+<script src="/assetss/js/jquery.min.js"></script>
+<script src="/assetss/js/popper.min.js"></script>
+<script src="/assetss/js/bootstrap.min.js"></script>
+<script src="/assetss/js/modernizr.min.js"></script>
+<script src="/assetss/js/detect.js"></script>
+<script src="/assetss/js/fastclick.js"></script>
+<script src="/assetss/js/jquery.slimscroll.js"></script>
+<script src="/assetss/js/jquery.blockUI.js"></script>
+<script src="/assetss/js/waves.js"></script>
+<script src="/assetss/js/jquery.nicescroll.js"></script>
+<script src="/assetss/js/jquery.scrollTo.min.js"></script>
+<script src="/assetss/js/sweetalert2.all.min.js"></script>
+<script src="/assetss/js/datatables.min.js"></script>
+<script src="/assetss/js/pdfmake.min.js"></script>
+<script src="/assetss/js/vfs_fonts.js"></script>
+<script src="/assetss/js/app.js"></script>
+<script src="/assetss/js/angular.min.js"></script>
+<script src="/assetss/js/angular-route.min.js"></script>
+<script src="/assetss/ctrl/admin-ctrl.js"></script>
+<script src="/assetss/ctrl/customer-ctrl.js"></script>
+<script src="/assetss/ctrl/product-ctrl.js"></script>
+<script src="/assetss/ctrl/category-ctrl.js"></script>
+<script src="/assetss/ctrl/authority-ctrl.js"></script>
+<script src="/assetss/ctrl/dashboard-ctrl.js"></script>
+
+</body>
+
+</html>

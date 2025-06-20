@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html ng-app="dashboardApp">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard Test</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+</head>
+<body ng-controller="DashboardController">
+    <h1>Dashboard Test</h1>
+    
+    <div>
+        <h3>Product Count: {{productCount}}</h3>
+        <h3>Category Count: {{categoryCount}}</h3>
+        <h3>Customer Count: {{customerCount}}</h3>
+        <h3>Latest Customer: {{latestCustomer ? latestCustomer.fullname : 'Loading...'}}</h3>
+    </div>
+
+    <script>
+        var app = angular.module('dashboardApp', []);
+        
+        app.controller('DashboardController', function($scope, $http) {
+            console.log('Dashboard controller started');
+            
+            $scope.productCount = 'Loading...';
+            $scope.categoryCount = 'Loading...';
+            $scope.customerCount = 'Loading...';
+            $scope.latestCustomer = null;
+            
+            // Test products
+            $http.get('/rest/products').then(function(response) {
+                console.log('Products response:', response.data);
+                $scope.productCount = response.data.length;
+            }).catch(function(error) {
+                console.error('Products error:', error);
+                $scope.productCount = 'Error: ' + error.status;
+            });
+            
+            // Test categories  
+            $http.get('/rest/categories').then(function(response) {
+                console.log('Categories response:', response.data);
+                $scope.categoryCount = response.data.length;
+            }).catch(function(error) {
+                console.error('Categories error:', error);
+                $scope.categoryCount = 'Error: ' + error.status;
+            });
+            
+            // Test customers
+            $http.get('/rest/customers').then(function(response) {
+                console.log('Customers response:', response.data);
+                $scope.customerCount = response.data.length;
+                if (response.data.length > 0) {
+                    $scope.latestCustomer = response.data[response.data.length - 1];
+                }
+            }).catch(function(error) {
+                console.error('Customers error:', error);
+                $scope.customerCount = 'Error: ' + error.status;
+            });
+        });
+    </script>
+</body>
+</html>

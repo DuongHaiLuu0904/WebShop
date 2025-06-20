@@ -1,0 +1,80 @@
+<div class="row mx-0 bg-white" ng-if="items">
+    <div class="col-12 py-3">
+        <table id="datatable-buttons" class="table table-collapse table-bordered dt-responsive">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Create Date</th>
+                    <th>Image</th>
+                    <th>Category</th>
+                    <th>Available</th>
+                    <th>#</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="item in pager.items | filter:customProductFilter:searchText">
+                    <td class="align-center">{{item.id}}</td>
+                    <td class="align-center w-25">{{item.name}}</td>
+                    <td class="align-center">$ {{item.price | number:2}}</td>
+                    <td class="align-center">{{item.createDate | date:'dd/MM/yyyy'}}</td>
+                    <td class="align-center">
+                        <img ng-src="/assets/images/{{item.image}}" style="max-width: 80px; max-height: 80px;"
+                            alt="{{item.name}}">
+                    </td>
+                    <td class="align-center">{{item.category.name}}</td>
+                    <td class="align-center">{{item.available?'Yes':'No'}}</td>
+                    <td class="align-center">
+                        <div class="btn-group btn-group-xs">
+                            <button ng-click="edit(item)" class="btn btn-icon">
+                                <i class="fa fa-xs fa-pen"></i>
+                            </button>
+                            <button ng-click="delete(item)" class="btn btn-danger">
+                                <i class="fa fa-xs fa-times"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                <tr ng-if="pager.items.length == 0">
+                    <td colspan="8" class="text-center">No data available in table</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="card-header text-center">
+            <button ng-click="pager.first()" class="btn btn-danger">
+                <i class="fas fa-arrow-to-left"></i>
+            </button>
+            <button ng-click="pager.prev()" class="btn btn-primary">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <button class="btn btn-success">{{pager.page + 1}} of {{pager.count ? pager.count : '1'}}</button>
+            <button ng-click="pager.next()" class="btn btn-primary">
+                <i class="fas fa-arrow-right"></i>
+            </button>
+            <button ng-click="pager.last()" class="btn btn-danger">
+                <i class="fas fa-arrow-to-right"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+<script src="/assetss/js/init.js"></script>
+<script>
+    function removeDiacritics(str) {
+        return str.normalize('NFD').replace(/\p{Diacritic}/gu, '').replace(/đ/g, 'd').replace(/Đ/g, 'D');
+    }
+    app.filter('customProductFilter', function () {
+        return function (items, searchText) {
+            if (!searchText) return items;
+            var normSearch = removeDiacritics(searchText.toLowerCase());
+            return items.filter(function (item) {
+                return [item.id, item.name, item.price, item.createDate, item.image, item.category && item.category.name, item.available ? 'yes' : 'no'].some(function (val) {
+                    if (!val) return false;
+                    var normVal = removeDiacritics(String(val).toLowerCase());
+                    return normVal.includes(normSearch) || normVal.replace(/\s+/g, '').includes(normSearch.replace(/\s+/g, ''));
+                });
+            });
+        };
+    });
+</script>

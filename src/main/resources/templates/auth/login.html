@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{/layout/index :: dynamic(~{::main})}">
+<body>
+<main class="main-content">
+    <div class="page-header-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <div class="page-header-content">
+                        <nav class="breadcrumb-area">
+                            <ul class="breadcrumb">
+                                <li>
+                                    <a href="/">Home</a>
+                                </li>
+                                <li class="breadcrumb-sep">/</li>
+                                <li>Account</li>
+                            </ul>
+                        </nav>
+                        <h4 class="title">Login</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section class="account-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 col-md-8 m-auto">
+                    <div class="account-form-wrap">
+                        <div class="login-form">
+                            <div class="content">
+                                <h4 class="title">Login your account</h4>
+                                <p>Please login using account detail bellow.</p>
+                            </div>
+                            <form th:object="${customer}" th:action="@{/auth/login}" method="post">
+                                <div class="row">
+                                    <div class="col-12" th:if="${message}">
+                                        <div class="alert alert-warning p-2">
+                                            <i class="text-danger" th:text="${message}"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="form-group">
+                                            <label class="form-label">Username</label>
+                                            <input th:field="*{username}" class="form-control mb-1" type="text"
+                                                   placeholder="Enter your username">
+                                            <small th:errors="*{username}" style="color: red"></small>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="form-group">
+                                            <label class="form-label">Password</label>
+                                            <input th:field="*{password}" class="form-control mb-1" type="password"
+                                                   placeholder="Enter your password">
+                                            <small th:errors="*{password}" style="color: red"></small>
+                                        </div>
+                                    </div>
+                                    <!-- 
+                                    <div class="col-12">
+                                        <div class="form-group">
+                                            <label class="checkbox-inline">
+                                                <input type="checkbox" name="remember-me">
+                                                <span class="text">Remember me?</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                     -->
+                                    <div class="col-12">
+                                        <div class="login-form-group">
+                                            <button class="btn-sign" type="submit">Sign In</button>
+                                            <a class="btn-pass-forgot" th:href="@{/auth/forgot-password}">Forgot
+                                                password?</a>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="account-optional-group">
+                                            <div class="text-center">
+                                                Don't have an account yet?
+                                                <a class="btn-create fw-bold" th:href="@{/auth/register}">Sign Up</a>
+                                            </div>
+                                            <!-- 
+                                            <div class="text-center my-3">
+                                                <p class="fw-bold">OR</p>
+                                                <a href="/oauth2/authorization/google" class="btn btn-danger rounded-0">
+                                                    <i class="fa fa-google"></i> Google
+                                                </a>
+                                                <a href="/oauth2/authorization/facebook"
+                                                   class="btn btn-primary rounded-0">
+                                                    <i class="fa fa-facebook"></i> Facebook
+                                                </a>
+                                            </div>
+                                            -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+</body>
+</html>

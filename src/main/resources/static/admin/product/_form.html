@@ -1,0 +1,78 @@
+<div class="row mx-0 bg-white">
+    <div class="col-md-4 text-center">
+		<span ng-if="form.image == null">
+			<img ng-src="{{'/assets/images/cloud-upload.jpg'}}" style="max-width: 100%; margin-top: 5rem">
+		</span>
+        <span ng-if="form.image != null">
+			<img ng-src="{{'/assets/images/'+form.image}}" style="max-width: 100%; margin-top: 5rem">
+		</span>
+    </div>
+    <div class="col-md-8">
+        <form class="form p-3">
+            <div class="form-group row">
+                <label class="form-label">Name</label>
+                <input type="text" class="form-control" ng-model="form.name" placeholder="Enter name">
+            </div>
+            <div class="form-group row">
+                <label class="form-label">Price</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">$</span>
+                    </div>
+                    <input type="number" class="form-control" ng-model="form.price" placeholder="Enter price">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="form-label">Image</label>
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="image"
+                           onchange="angular.element(this).scope().imageChanged(this.files)">
+                    <label class="custom-file-label">Choose file</label>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="form-label">Category</label>
+                <select ng-model="form.category.id" class="custom-select">
+                    <option ng-repeat="c in cates" ng-value="c.id">{{c.name}}</option>
+                </select>
+            </div>
+            <div class="form-group row">
+                <label class="form-label">Create Date</label>
+                <input type="date" class="form-control" ng-model="form.createDate" placeholder="2022-01-01">
+            </div>
+            <div class="form-group row">
+                <label class="col-md-2 px-0 control-label">Available</label>
+                <div class="col-md-10">
+                    <div class="form-check-inline pr-3">
+                        <div class="custom-control custom-radio">
+                            <input type="radio" class="custom-control-input" id="yes" name="available"
+                                   ng-model="form.available" ng-value="true">
+                            <label class="custom-control-label" for="yes">Yes</label>
+                        </div>
+                    </div>
+                    <div class="form-check-inline">
+                        <div class="custom-control custom-radio">
+                            <input type="radio" class="custom-control-input" id="no" name="available"
+                                   ng-model="form.available" ng-value="false">
+                            <label class="custom-control-label" for="no">No</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="card-header text-center">
+    <button ng-click="create()" class="btn btn-primary">
+        <i class="fas fa-plus mr-1"></i> Create
+    </button>
+    <button ng-click="update()" class="btn btn-success">
+        <i class="far fa-save mr-1"></i> Update
+    </button>
+    <button ng-click="delete(form)" class="btn btn-danger">
+        <i class="fas fa-trash mr-1"></i> Delete
+    </button>
+    <button ng-click="reset()" class="btn btn-secondary">
+        <i class="fas fa-redo mr-1"></i> Reset
+    </button>
+</div>

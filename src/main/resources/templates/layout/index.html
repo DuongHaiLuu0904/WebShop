@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:fragment="dynamic(main)">
+<head>
+    <base href="/">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="shortcut icon" href="assets/img/favicon.ico" type="image/x-icon"/>
+    <title>Homepage - Julie</title>
+    <link th:href="@{assets/css/style.css}" rel="stylesheet"/>
+</head>
+<body ng-app="shopping-app" ng-controller="shopping-ctrl">
+<div class="wrapper">
+    <div class="preloader-wrap">
+        <div class="preloader">
+            <span class="dot"></span>
+            <div class="dots">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </div>
+    <main class="main-content">
+        <div th:replace="~{/layout/_menu.html}"></div>
+        <div th:replace="${main}"></div>
+    </main>
+</div>
+
+<footer class="footer-area">
+    <div class="footer-top-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-6 col-lg-3">
+                    <div class="widget-item">
+                        <div class="about-widget">
+                            <div class="footer-logo-area">
+                                <a href="index.html">
+                                    <img class="logo-main" src="assets/img/logo.png" alt="Logo"/>
+                                </a>
+                            </div>
+                            <ul>
+                                <li>
+                                    <i class="zmdi zmdi-pin"></i> Km 10 Nguyen Trai Street, Mo Lao Ward, Ha Dong District, Ha Noi
+                                </li>
+                                <li>
+                                    <i class="zmdi zmdi-email"></i>
+                                    <a href="mailto://luudh.b22cn513@stu.ptit.edu.vn">luudh.b22cn513@stu.ptit.edu.vn</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-lg-3">
+                    <div class="widget-item widget-item-one">
+                        <h4 class="widget-title">INFORMATION</h4>
+                        <div class="widget-menu-wrap">
+                            <ul class="nav-menu">
+                                <li>
+                                    <a href="javascript:(0);">New products</a>
+                                </li>
+                                <li>
+                                    <a href="javascript:(0);">Top sellers</a>
+                                </li>
+                                <li>
+                                    <a href="javascript:(0);">Our stores</a>
+                                </li>
+                                <li>
+                                    <a href="javascript:(0);">Customer</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-lg-3">
+                    <div class="widget-item widget-item-two">
+                        <h4 class="widget-title">QUICK LINKS</h4>
+                        <div class="widget-menu-wrap">
+                            <ul class="nav-menu">
+                                <li>
+                                    <a href="javascript:(0);">Contact us</a>
+                                </li>
+                                <li>
+                                    <a href="javascript:(0);">Help Center</a>
+                                </li>
+                                <li>
+                                    <a href="javascript:(0);">Refund Policy</a>
+                                </li>
+                                <li>
+                                    <a href="javascript:(0);">Report Spam</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-lg-3">
+                    <div class="widget-item">
+                        <h4 class="widget-title">newsletter</h4>
+                        <div class="widget-newsletter">
+                            <div class="newsletter-form">
+                                <form>
+                                    <input type="email" class="form-control" placeholder="email@example.com">
+                                    <button class="btn-submit" type="button">Subscribe</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <p class="copyright">
+                        © 2024, Julie. Made with <i class="fa fa-heart icon-heart"></i> by
+                        <a href="javascript:(0);"> BangLuuLinh</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<div id="scroll-to-top" class="scroll-to-top">
+    <span class="fa fa-angle-double-up"></span>
+</div>
+
+<aside class="off-canvas-wrapper">
+    <div class="off-canvas-inner">
+        <div class="off-canvas-overlay"></div>
+        <div class="off-canvas-content">
+            <div class="off-canvas-header">
+                <div class="close-action">
+                    <button class="btn-menu-close">
+                        menu <i class="fa fa-chevron-left"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="off-canvas-item">
+                <div class="res-mobile-menu menu-active-one"></div>
+            </div>
+        </div>
+    </div>
+</aside>
+
+<script src="assets/js/jquery-3.6.0.min.js"></script>
+<script src="assets/js/modernizr.min.js"></script>
+<script src="assets/js/jquery-migrate.js"></script>
+<script src="assets/js/jquery.slicknav.min.js"></script>
+<script src="assets/js/sweetalert2.all.min.js"></script>
+<script src="assets/js/jquery-zoom.min.js"></script>
+<script src="assets/js/popper.min.js"></script>
+<script src="assets/js/bootstrap.min.js"></script>
+<script src="assets/js/headroom.min.js"></script>
+<script src="assets/js/swiper.min.js"></script>
+<script src="assets/js/fancybox.min.js"></script>
+<script src="assets/js/custom.js"></script>
+<script src="assets/js/angular.min.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

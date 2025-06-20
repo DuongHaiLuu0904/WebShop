@@ -1,0 +1,189 @@
+<div class="page-content-wrapper">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="page-title-box">
+                    <div class="btn-group float-right">
+                        <ol class="breadcrumb hide-phone p-0 m-0">
+                            <li class="breadcrumb-item">
+                                <a href="#">Julie</a>
+                            </li>
+                            <li class="breadcrumb-item active">Dashboard</li>
+                        </ol>
+                    </div>
+                    <h4 class="page-title">Dashboard</h4>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="row">
+                    <div class="col-lg-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="icon-contain">
+                                    <div class="row">
+                                        <div class="col-2 align-self-center">
+                                            <i class="fas fa-tasks text-gradient-success"></i>
+                                        </div>
+                                        <div class="col-10 text-right">
+                                            <h5 class="mt-0 mb-1">{{productCount}}</h5>
+                                            <p class="mb-0 font-12 text-muted">Products</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="card">
+                            <div class="card-body justify-content-center">
+                                <div class="icon-contain">
+                                    <div class="row">
+                                        <div class="col-2 align-self-center">
+                                            <i class="far fa-gem text-gradient-danger"></i>
+                                        </div>
+                                        <div class="col-10 text-right">
+                                            <h5 class="mt-0 mb-1">{{categoryCount}}</h5>
+                                            <p class="mb-0 font-12 text-muted">Categories</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="icon-contain">
+                                    <div class="row">
+                                        <div class="col-2 align-self-center">
+                                            <i class="fas fa-users text-gradient-warning"></i>
+                                        </div>
+                                        <div class="col-10 text-right">
+                                            <h5 class="mt-0 mb-1">{{customerCount}}</h5>
+                                            <p class="mb-0 font-12 text-muted">Customer</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="card ">
+                            <div class="card-body">
+                                <div class="icon-contain">
+                                    <div class="row">
+                                        <div class="col-2 align-self-center">
+                                            <i class="fas fa-database text-gradient-primary"></i>
+                                        </div>                        <div class="col-10 text-right">
+                            <h5 class="mt-0 mb-1">{{revenue}}</h5>
+                            <p class="mb-0 font-12 text-muted">Revenue</p>
+                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xl-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="header-title pb-3 mt-0">New Customer</h5>
+                        <div class="table-responsive boxscroll" style="overflow: hidden; outline: none;">
+                            <div class="media">
+                                <img ng-src="/assetss/img/avatar.jpg" class="thumb-md rounded-circle"
+                                    ng-if="!latestCustomer || !latestCustomer.photo">
+                                <img ng-src="/assetss/img/{{latestCustomer.photo}}" class="thumb-md rounded-circle"
+                                    ng-if="latestCustomer && latestCustomer.photo">
+                                <div class="media-body ml-2">
+                                    <p class="mb-0">{{latestCustomer ? latestCustomer.fullname : 'No customer'}}</p>
+                                    <span class="font-12 text-muted">{{latestCustomer ? latestCustomer.email :
+                                        ''}}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-4 col-lg-6">
+                <div class="card">                    <div class="card-body">
+                        <h5 class="header-title mb-4 mt-0">Total Revenue</h5>
+                        <h4 class="mb-4">{{revenue}}</h4>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-sm-flex align-self-center">
+                            <img src="/assetss/img/code.svg" alt="" class="" height="100">
+                            <div class="media-body ml-3">
+                                <h6>Code Confirmed</h6>
+                                <p class="text-muted font-13 ">Contrary to popular belief, generators on Lorem Ipsum is
+                                    not
+                                    simply random text.</p>
+                                <a href="#" class="btn btn-gradient-secondary">Confirm</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-4  col-lg-6">
+                <div class="card timeline-card">
+                    <div class="card-body p-0">
+                        <div class="bg-gradient2 text-white text-center py-3 mb-4">
+                            <p class="mb-0 font-18">
+                                <i class="mdi mdi-clock-outline font-20"></i> This Week's Activity
+                            </p>
+                        </div>
+                    </div>
+                    <div class="card-body boxscroll">
+                        <div class="timeline">
+                            <div class="entry">
+                                <div class="title">
+                                    <h6>9/ Oct</h6>
+                                </div>
+                                <div class="body">
+                                    <p>All the Lorem Ipsum generators on the predefined chunks as...
+                                        <a href="#" class="text-primary"> Read More</a>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="entry">
+                                <div class="title">
+                                    <h6>8/ Oct</h6>
+                                </div>
+                                <div class="body">
+                                    <p>Contrary to popular belief, Lorem Ipsum is not simply random text.....
+                                        <a href="#" class="text-primary"> Read More</a>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="entry">
+                                <div class="title">
+                                    <h6>7/ Oct</h6>
+                                </div>
+                                <div class="body">
+                                    <p class="pb-1">Many desktop publishing packages and web page editors now.....
+                                        <a href="#" class="text-primary"> Read More</a>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="entry">
+                                <div class="title">
+                                    <h6>6/ Oct</h6>
+                                </div>
+                                <div class="body">
+                                    <p class="pb-1 mb-0">All the Lorem Ipsum generators on the predefined chunks...
+                                        <a href="#" class="text-primary"> Read More</a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>        </div>
+    </div>
+</div>

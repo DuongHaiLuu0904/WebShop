@@ -1,0 +1,59 @@
+<div class="page-content-wrapper">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="page-title-box">
+                    <div class="btn-group float-right">
+                        <ol class="breadcrumb hide-phone p-0 m-0">
+                            <li class="breadcrumb-item">
+                                <a href="#">Julie</a>
+                            </li>
+                            <li class="breadcrumb-item active">Authorities</li>
+                        </ol>
+                    </div>
+                    <h4 class="page-title">Authorities</h4>
+                </div>
+            </div>
+        </div>
+        <table class="table table-collapse table-bordered bg-white mb-0">
+            <thead>
+            <tr>
+                <th>Username</th>
+                <th>Fullname</th>
+                <th>Email</th>
+                <th ng-repeat="role in roles" class="text-center">{{role.name}}</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="acc in pager.admins">
+                <td class="align-center">{{acc.username}}</td>
+                <td class="align-center">{{acc.fullname}}</td>
+                <td class="align-center">{{acc.email}}</td>
+                <th ng-repeat="role in roles" class="align-center text-center" style="width:10%">
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="authority-{{acc.username}}-{{role.id}}"
+                               ng-checked="authority_of(acc,role)" ng-click="authority_changed(acc,role)">
+                        <label class="custom-control-label" for="authority-{{acc.username}}-{{role.id}}"></label>
+                    </div>
+                </th>
+            </tr>
+            </tbody>
+        </table>
+        <div class="card-footer text-center">
+            <button ng-click="pager.first()" class="btn btn-danger">
+                <i class="fas fa-step-backward"></i>
+            </button>
+            <button ng-click="pager.prev()" class="btn btn-primary">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="btn btn-success">{{pager.page + 1}} of {{pager.count}}</button>
+            <button ng-click="pager.next()" class="btn btn-primary">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+            <button ng-click="pager.last()" class="btn btn-danger">
+                <i class="fas fa-step-forward"></i>
+            </button>
+        </div>
+        <input type="email" class="form-control" ng-model="form.email" placeholder="Enter email" required>
+    </div>
+</div>
