@@ -32,28 +32,25 @@
                             <div class="content">
                                 <h4 class="title">Login your account</h4>
                                 <p>Please login using account detail bellow.</p>
-                            </div>
-                            <form th:object="${customer}" th:action="@{/auth/login}" method="post">
+                            </div>                            <form th:action="@{/auth/login}" method="post">
                                 <div class="row">
-                                    <div class="col-12" th:if="${message}">
+                                    <div class="col-12" th:if="${message != null}">
                                         <div class="alert alert-warning p-2">
-                                            <i class="text-danger" th:text="${message}"></i>
+                                            <span class="text-danger" th:text="${message}">Error message</span>
                                         </div>
                                     </div>
                                     <div class="col-12">
                                         <div class="form-group">
                                             <label class="form-label">Username</label>
-                                            <input th:field="*{username}" class="form-control mb-1" type="text"
-                                                   placeholder="Enter your username">
-                                            <small th:errors="*{username}" style="color: red"></small>
+                                            <input name="username" class="form-control mb-1" type="text"
+                                                   placeholder="Enter your username" required>
                                         </div>
                                     </div>
                                     <div class="col-12">
                                         <div class="form-group">
                                             <label class="form-label">Password</label>
-                                            <input th:field="*{password}" class="form-control mb-1" type="password"
-                                                   placeholder="Enter your password">
-                                            <small th:errors="*{password}" style="color: red"></small>
+                                            <input name="password" class="form-control mb-1" type="password"
+                                                   placeholder="Enter your password" required>
                                         </div>
                                     </div>
                                     <!-- 

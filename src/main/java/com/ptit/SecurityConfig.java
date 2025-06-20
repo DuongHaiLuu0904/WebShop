@@ -52,7 +52,15 @@ public class SecurityConfig {
 
                 Collection<GrantedAuthority> authorities = user.getAuthorities();
                 Map<String, Object> authentication = new HashMap<>();
-                authentication.put("user", user);
+                
+                // Tạo user object đơn giản cho JSON serialization
+                Map<String, Object> userInfo = new HashMap<>();
+                userInfo.put("username", username);
+                userInfo.put("fullname", user.getFullname());
+                userInfo.put("email", user.getEmail());
+                userInfo.put("photo", user.getPhoto());
+                
+                authentication.put("user", userInfo);
                 byte[] token = (username + ":" + user.getPassword()).getBytes();
                 authentication.put("token", "Basic " + Base64.getEncoder().encodeToString(token));
                 session.setAttribute("authentication", authentication);

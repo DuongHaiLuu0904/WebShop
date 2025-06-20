@@ -35,33 +35,35 @@ public class AuthController {
     }
 
     @RequestMapping("/auth/login/form")
-    public String logInForm(Model model, @ModelAttribute("customer") Customers customer) {
+    public String logInForm(Model model) {
         return "auth/login";
+    }
+    
+    @RequestMapping("/auth/login/test")
+    public String loginTest(Model model) {
+        return "auth/login-test";
     }
 
     @RequestMapping("/auth/login/success")
-    public String logInSuccess(Model model, @ModelAttribute("customer") Customers customer) {
+    public String logInSuccess(Model model) {
         model.addAttribute("message", "Logged in successfully");
         return "redirect:/index";
     }
 
     @RequestMapping("/auth/login/error")
-    public String logInError(Model model, @Validated @ModelAttribute("customer") Customers customer, Errors errors) {
-        if (errors.hasErrors()) {
-            model.addAttribute("message", "Wrong login information!");
-            return "auth/login";
-        }
+    public String logInError(Model model) {
+        model.addAttribute("message", "Wrong login information!");
         return "auth/login";
     }
 
     @RequestMapping("/auth/unauthoried")
-    public String unauthoried(Model model, @ModelAttribute("customer") Customers customer) {
+    public String unauthoried(Model model) {
         model.addAttribute("message", "You don't have access!");
         return "auth/login";
     }
 
     @RequestMapping("/auth/logout/success")
-    public String logOutSuccess(Model model, @ModelAttribute("customer") Customers customer) {
+    public String logOutSuccess(Model model) {
         model.addAttribute("message", "You are logged out!");
         return "auth/login";
     }

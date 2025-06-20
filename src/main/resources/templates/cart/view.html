@@ -51,7 +51,7 @@
                                     <td class="indecor-product-quantity">
                                         <input type="number" pattern="[0-9]*" id="spinner" name="value" value="1"
                                                min="1" max="200"
-                                               step="1" ng-change="cart.saveToLocalStorage()" ng-model="item.qty">
+                                               step="1" ng-change="cart.updateQuantity(item.id, item.qty)" ng-model="item.qty">
                                     </td>
                                     <td class="indecor-product-subtotal">
                                         <span class="price">${{item.qty*item.price | number:2}}</span>

@@ -1,7 +1,4 @@
-﻿
---
--- Table structure for table `Customers`
---
+﻿-- Bảng người dùng
 CREATE TABLE Customers (
    username VARCHAR(50) NOT NULL,
    password VARCHAR(50) NOT NULL,
@@ -12,18 +9,24 @@ CREATE TABLE Customers (
    CONSTRAINT PK_Customers PRIMARY KEY (username)
 );
 
---
--- Table structure for table `Roles`
---
+-- Bảng vai trò người dùng
 CREATE TABLE Roles (
    id VARCHAR(10) NOT NULL,
    name VARCHAR(50) NOT NULL,
    CONSTRAINT PK_Roles PRIMARY KEY (id)
 );
 
---
--- Table structure for table `Categories`
---
+-- Bảng phân quyền người dùng
+CREATE TABLE Authorities (
+     id INT AUTO_INCREMENT NOT NULL,
+     username VARCHAR(50) NOT NULL,
+     roleId VARCHAR(10) NOT NULL,
+     CONSTRAINT PK_UserRoles PRIMARY KEY (id),
+     CONSTRAINT FK_Authorities_Customers FOREIGN KEY (username) REFERENCES Customers (username) ON UPDATE CASCADE ON DELETE CASCADE,
+     CONSTRAINT FK_Authorities_Roles FOREIGN KEY (roleId) REFERENCES Roles (id) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+-- Bảng danh mục sản phẩm
 CREATE TABLE Categories (
     id CHAR(4) NOT NULL,
     name VARCHAR(50) NOT NULL,
@@ -32,9 +35,7 @@ CREATE TABLE Categories (
     CONSTRAINT PK_Categories PRIMARY KEY (id)
 );
 
---
--- Table structure for table `Products`
---
+-- Bảng sản phẩm
 CREATE TABLE Products (
   id INT AUTO_INCREMENT NOT NULL,
   name VARCHAR(50) NOT NULL,
@@ -44,40 +45,42 @@ CREATE TABLE Products (
   createDate DATE NOT NULL DEFAULT (CURRENT_DATE),
   available BOOLEAN NOT NULL DEFAULT 1,
   categoryId CHAR(4) NOT NULL,
-  CONSTRAINT PK_Products PRIMARY KEY (id)
+  CONSTRAINT PK_Products PRIMARY KEY (id),
+  CONSTRAINT FK_Products_Categories FOREIGN KEY (categoryId) REFERENCES Categories (id) ON DELETE CASCADE
 );
 
---
--- Table structure for table `Orders`
---
+-- Bảng đơn hàng
 CREATE TABLE Orders (
     id BIGINT AUTO_INCREMENT NOT NULL,
     username VARCHAR(50) NOT NULL,
     createDate DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     address VARCHAR(100) NOT NULL,
-    CONSTRAINT PK_Orders PRIMARY KEY (id)
+    CONSTRAINT PK_Orders PRIMARY KEY (id),
+    CONSTRAINT FK_Orders_Customers FOREIGN KEY (username) REFERENCES Customers (username) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
---
--- Table structure for table `OrderDetails`
---
+-- Bảng chi tiết đơn hàng
 CREATE TABLE OrderDetails (
       id BIGINT AUTO_INCREMENT NOT NULL,
       orderId BIGINT NOT NULL,
       productId INT NOT NULL,
       price FLOAT NOT NULL DEFAULT 0,
       quantity INT NOT NULL DEFAULT 1,
-      CONSTRAINT PK_OrderDetails PRIMARY KEY (id)
+      CONSTRAINT PK_OrderDetails PRIMARY KEY (id),
+      CONSTRAINT FK_OrderDetails_Orders FOREIGN KEY (orderId) REFERENCES Orders (id) ON UPDATE CASCADE ON DELETE CASCADE,
+      CONSTRAINT FK_OrderDetails_Products FOREIGN KEY (productId) REFERENCES Products (id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
---
--- Table structure for table `Authorities`
---
-CREATE TABLE Authorities (
-     id INT AUTO_INCREMENT NOT NULL,
-     username VARCHAR(50) NOT NULL,
-     roleId VARCHAR(10) NOT NULL,
-     CONSTRAINT PK_UserRoles PRIMARY KEY (id)
+-- ✅ Bảng giỏ hàng (thêm mới)
+CREATE TABLE CartItems (
+    username VARCHAR(50) NOT NULL,
+    product_id INT NOT NULL,
+    quantity INT NOT NULL DEFAULT 1,
+    price FLOAT NOT NULL,
+    added_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (username, product_id),
+    FOREIGN KEY (username) REFERENCES Customers(username) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES Products(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 --
@@ -138,14 +141,15 @@ VALUES
 --
 INSERT INTO Categories (id, name, note, description)
 VALUES
-    ('1000', 'Đồng hồ đeo tay', 'Đồng hồ', 'Đồng hồ đeo tay'),
-    ('1001', 'Máy tính xách tay', 'Máy tính', 'Máy tính xách tay'),
-    ('1002', 'Máy ảnh', 'Máy ảnh', 'Máy ảnh chụp hình'),
-    ('1003', 'Điện thoại', 'Điện thoại', 'Điện thoại di động'),
-    ('1004', 'Nước hoa', 'Nước hoa', 'Nước hoa thơm ngát'),
-    ('1005', 'Nữ trang', 'Nữ trang', 'Nữ trang sang trọng'),
-    ('1006', 'Nón thời trang', 'Nón', 'Nón thời trang'),
-    ('1007', 'Túi xách du lịch', 'Túi xách', 'Túi xách du lịch');
+    ('1000', 'Đồng hồ đeo tay', 'Đồng hồ', 'Đồng hồ đeo tay chất lượng cao'),
+    ('1001', 'Máy tính xách tay', 'Máy tính', 'Các loại máy tính xách tay hiện đại'),
+    ('1002', 'Máy ảnh', 'Máy ảnh', 'Máy ảnh chụp hình chuyên nghiệp và nghiệp dư'),
+    ('1003', 'Điện thoại', 'Điện thoại', 'Điện thoại di động thông minh'),
+    ('1004', 'Nước hoa', 'Nước hoa', 'Nước hoa thơm ngát các loại'),
+    ('1005', 'Nữ trang', 'Nữ trang', 'Nữ trang sang trọng và tinh xảo'),
+    ('1006', 'Nón thời trang', 'Nón', 'Nón thời trang đa dạng kiểu dáng'),
+    ('1007', 'Túi xách du lịch', 'Túi xách', 'Túi xách du lịch bền bỉ và tiện lợi');
+
 
 --
 -- Data for table `Products`
@@ -321,18 +325,3 @@ INSERT INTO OrderDetails (id, orderId, productId, price, quantity) VALUES (10004
 INSERT INTO OrderDetails (id, orderId, productId, price, quantity) VALUES (100044, 10263, 1016, 13.9, 60);
 INSERT INTO OrderDetails (id, orderId, productId, price, quantity) VALUES (100045, 10263, 1024, 3.6, 28);
 INSERT INTO OrderDetails (id, orderId, productId, price, quantity) VALUES (100046, 10263, 1030, 20.7, 60);
-
-
-
---
--- Foreign key constraints
---
-ALTER TABLE Authorities ADD CONSTRAINT FK_Authorities_Customers FOREIGN KEY (username) REFERENCES Customers (username) ON UPDATE CASCADE ON DELETE CASCADE;
-ALTER TABLE Authorities ADD CONSTRAINT FK_Authorities_Roles FOREIGN KEY (roleId) REFERENCES Roles (id) ON UPDATE CASCADE ON DELETE CASCADE;
-ALTER TABLE OrderDetails ADD CONSTRAINT FK_OrderDetails_Orders FOREIGN KEY (orderId) REFERENCES Orders (id) ON UPDATE CASCADE ON DELETE CASCADE;
-ALTER TABLE OrderDetails ADD CONSTRAINT FK_OrderDetails_Products FOREIGN KEY (productId) REFERENCES Products (id) ON UPDATE CASCADE ON DELETE CASCADE;
-ALTER TABLE Orders ADD CONSTRAINT FK_Orders_Customers FOREIGN KEY (username) REFERENCES Customers (username) ON UPDATE CASCADE ON DELETE CASCADE;
-ALTER TABLE Products ADD CONSTRAINT FK_Products_Categories FOREIGN KEY (categoryId) REFERENCES Categories (id) ON DELETE CASCADE;
-
--- Re-enable foreign key checks
-SET FOREIGN_KEY_CHECKS = 1;
