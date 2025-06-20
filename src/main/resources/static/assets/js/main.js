@@ -10,7 +10,7 @@ app.run(function ($http, $rootScope) {
                 token: resp.data.token
             };
             $http.defaults.headers.common["Authorization"] = $auth.token;
-            
+
             // Trigger cart load after authentication is set
             $rootScope.$broadcast('authenticationLoaded');
         }
@@ -37,7 +37,7 @@ app.controller("shopping-ctrl", function ($scope, $http, $rootScope, $timeout) {
         items: [],
         count: 0,
         amount: 0,
-        
+
         // Them sp vao gio hang
         add(id) {
             // Kiểm tra authentication, nếu không có thì thử refresh từ server
@@ -61,7 +61,7 @@ app.controller("shopping-ctrl", function ($scope, $http, $rootScope, $timeout) {
                 });
                 return;
             }
-            
+
             $http.post(`/rest/cart/${$rootScope.$auth.username}/add/${id}`)
                 .then(resp => {
                     sweetalert("Đã thêm sản phẩm vào giỏ hàng!");
@@ -71,7 +71,7 @@ app.controller("shopping-ctrl", function ($scope, $http, $rootScope, $timeout) {
                     sweetalert("Lỗi khi thêm sản phẩm vào giỏ hàng!");
                 });
         },
-        
+
         // Them sp vao gio hang va chuyen den trang cart
         addAndGoToCart(id) {
             // Kiểm tra authentication, nếu không có thì thử refresh từ server
@@ -95,13 +95,13 @@ app.controller("shopping-ctrl", function ($scope, $http, $rootScope, $timeout) {
                 });
                 return;
             }
-            
+
             $http.post(`/rest/cart/${$rootScope.$auth.username}/add/${id}`)
                 .then(resp => {
                     sweetalert("Đã thêm sản phẩm vào giỏ hàng!");
                     this.loadFromServer();
                     // Chuyển đến trang giỏ hàng sau 1 giây
-                    $timeout(function() {
+                    $timeout(function () {
                         window.location.href = "/cart/view";
                     }, 1000);
                 })
@@ -109,13 +109,13 @@ app.controller("shopping-ctrl", function ($scope, $http, $rootScope, $timeout) {
                     sweetalert("Lỗi khi thêm sản phẩm vào giỏ hàng!");
                 });
         },
-        
+
         // Xoa sp khoi gio hang
         remove(id) {
             if (!$rootScope.$auth || !$rootScope.$auth.username) {
                 return;
             }
-            
+
             $http.delete(`/rest/cart/${$rootScope.$auth.username}/remove/${id}`)
                 .then(resp => {
                     sweetalert("Đã xóa sản phẩm khỏi giỏ hàng!");
@@ -125,18 +125,18 @@ app.controller("shopping-ctrl", function ($scope, $http, $rootScope, $timeout) {
                     sweetalert("Lỗi khi xóa sản phẩm!");
                 });
         },
-        
+
         // Cap nhat so luong sp trong gio hang
         updateQuantity(productId, quantity) {
             if (!$rootScope.$auth || !$rootScope.$auth.username) {
                 return;
             }
-            
+
             if (quantity <= 0) {
                 this.remove(productId);
                 return;
             }
-            
+
             $http.put(`/rest/cart/${$rootScope.$auth.username}/update/${productId}?quantity=${quantity}`)
                 .then(resp => {
                     this.loadFromServer();
@@ -146,13 +146,13 @@ app.controller("shopping-ctrl", function ($scope, $http, $rootScope, $timeout) {
                     this.loadFromServer(); // Reload to revert changes
                 });
         },
-        
+
         // Xoa sach sp trong gio hang
         clear() {
             if (!$rootScope.$auth || !$rootScope.$auth.username) {
                 return;
             }
-            
+
             $http.delete(`/rest/cart/${$rootScope.$auth.username}/clear`)
                 .then(resp => {
                     sweetalert("Đã xóa tất cả sản phẩm trong giỏ hàng!");
@@ -162,12 +162,12 @@ app.controller("shopping-ctrl", function ($scope, $http, $rootScope, $timeout) {
                     sweetalert("Lỗi khi xóa giỏ hàng!");
                 });
         },
-        
+
         // Tinh thanh tien cua 1 sp
         amt_of(item) {
             return item.quantity * item.price;
         },
-        
+
         // Tang so luong san pham
         increaseQuantity(productId) {
             var item = this.items.find(item => item.id == productId);
@@ -175,7 +175,7 @@ app.controller("shopping-ctrl", function ($scope, $http, $rootScope, $timeout) {
                 this.updateQuantity(productId, item.qty + 1);
             }
         },
-        
+
         // Giam so luong san pham
         decreaseQuantity(productId) {
             var item = this.items.find(item => item.id == productId);
@@ -194,9 +194,9 @@ app.controller("shopping-ctrl", function ($scope, $http, $rootScope, $timeout) {
                 this.amount = 0;
                 return;
             }
-            
+
             var cart = this;
-            
+
             // Load cart items
             $http.get(`/rest/cart/${$rootScope.$auth.username}`)
                 .then(resp => {
@@ -211,19 +211,19 @@ app.controller("shopping-ctrl", function ($scope, $http, $rootScope, $timeout) {
                             product: item.product
                         };
                     });
-                    
+
                     // Load cart count
                     return $http.get(`/rest/cart/${$rootScope.$auth.username}/count`);
                 })
                 .then(resp => {
                     cart.count = resp.data;
-                    
+
                     // Load cart amount
                     return $http.get(`/rest/cart/${$rootScope.$auth.username}/amount`);
                 })
                 .then(resp => {
                     cart.amount = resp.data;
-                    
+
                     // Force digest cycle if not already in progress
                     if (!$scope.$$phase) {
                         $scope.$apply();
@@ -236,21 +236,21 @@ app.controller("shopping-ctrl", function ($scope, $http, $rootScope, $timeout) {
                 });
         }
     }
-    
+
     // Load gio hang khi khoi tao - nhưng chờ đến khi authentication được load
-    $scope.$on('authenticationLoaded', function() {
+    $scope.$on('authenticationLoaded', function () {
         $scope.cart.loadFromServer();
     });
-    
+
     // Nếu đã có auth thì load ngay
     if ($rootScope.$auth) {
         $scope.cart.loadFromServer();
     }
 
     // Watch for authentication changes to reload cart
-    $scope.$watch(function() {
+    $scope.$watch(function () {
         return $rootScope.$auth;
-    }, function(newVal, oldVal) {
+    }, function (newVal, oldVal) {
         if (newVal && newVal.username && (!oldVal || newVal.username !== oldVal.username)) {
             $scope.cart.loadFromServer();
         } else if (!newVal) {
@@ -264,14 +264,14 @@ app.controller("shopping-ctrl", function ($scope, $http, $rootScope, $timeout) {
     // Thanh toán
     $scope.order = {
         get customer() {
-            return {username: $rootScope.$auth ? $rootScope.$auth.username : ""};
+            return { username: $rootScope.$auth ? $rootScope.$auth.username : "" };
         },
         createDate: new Date(),
         address: "",
         get orderDetails() {
             return $scope.cart.items.map(item => {
                 return {
-                    product: {id: item.id},
+                    product: { id: item.id },
                     price: item.price,
                     quantity: item.qty || item.quantity
                 }
@@ -282,12 +282,12 @@ app.controller("shopping-ctrl", function ($scope, $http, $rootScope, $timeout) {
                 sweetalert("Vui lòng đăng nhập để đặt hàng!");
                 return;
             }
-            
+
             if ($scope.cart.items.length === 0) {
                 sweetalert("Giỏ hàng trống!");
                 return;
             }
-            
+
             var order = angular.copy(this);
             // Thực hiện đặt hàng
             $http.post(url1, order).then(resp => {

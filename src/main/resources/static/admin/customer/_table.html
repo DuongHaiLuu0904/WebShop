@@ -2,33 +2,33 @@
     <div class="col-12 py-3">
         <table class="table table-collapse table-bordered">
             <thead>
-            <tr>
-                <th>Username</th>
-                <th>Password</th>
-                <th>Fullname</th>
-                <th>Email</th>
-                <th>Photo</th>
-                <th>#</th>
-            </tr>
+                <tr>
+                    <th>Username</th>
+                    <th>Password</th>
+                    <th>Fullname</th>
+                    <th>Email</th>
+                    <th>Photo</th>
+                    <th>#</th>
+                </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="item in pager.items">
-                <td class="align-center">{{item.username}}</td>
-                <td class="align-center">{{item.password}}</td>
-                <td class="align-center">{{item.fullname}}</td>
-                <td class="align-center">{{item.email}}</td>
-                <td class="align-center">{{item.photo}}</td>
-                <td class="align-center">
-                    <div class="btn-group btn-group-xs">
-                        <button ng-click="edit(item)" class="btn btn-icon">
-                            <i class="fa fa-xs fa-pen"></i>
-                        </button>
-                        <button ng-click="delete(item)" class="btn btn-danger">
-                            <i class="fa fa-xs fa-times"></i>
-                        </button>
-                    </div>
-                </td>
-            </tr>
+                <tr ng-repeat="item in pager.items">
+                    <td class="align-center">{{item.username}}</td>
+                    <td class="align-center">{{item.password}}</td>
+                    <td class="align-center">{{item.fullname}}</td>
+                    <td class="align-center">{{item.email}}</td>
+                    <td class="align-center">{{item.photo}}</td>
+                    <td class="align-center">
+                        <div class="btn-group btn-group-xs">
+                            <button ng-click="edit(item)" class="btn btn-icon">
+                                <i class="fa fa-xs fa-pen"></i>
+                            </button>
+                            <button ng-click="delete(item)" class="btn btn-danger">
+                                <i class="fa fa-xs fa-times"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
             </tbody>
         </table>
     </div>

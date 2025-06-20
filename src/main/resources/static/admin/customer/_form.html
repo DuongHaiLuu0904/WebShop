@@ -1,11 +1,11 @@
 <div class="row mx-0 bg-white">
     <div class="col-md-4 text-center">
-		<span ng-if="form.image == null">
-			<img ng-src="{{'/assets/images/cloud-upload.jpg'}}" style="width: 80%; margin-top: 5rem">
-		</span>
+        <span ng-if="form.image == null">
+            <img ng-src="{{'/assets/images/cloud-upload.jpg'}}" style="width: 80%; margin-top: 5rem">
+        </span>
         <span ng-if="form.image != null">
-			<img ng-src="{{'/assets/images/'+form.image}}" style="width: 80%; margin-top: 5rem">
-		</span>
+            <img ng-src="{{'/assets/images/'+form.image}}" style="width: 80%; margin-top: 5rem">
+        </span>
     </div>
     <div class="col-md-8">
         <form class="form p-3">
@@ -29,7 +29,7 @@
                 <label class="form-label">Photo</label>
                 <div class="custom-file">
                     <input type="file" class="custom-file-input" id="image"
-                           onchange="angular.element(this).scope().imageChanged(this.files)">
+                        onchange="angular.element(this).scope().imageChanged(this.files)">
                     <label class="custom-file-label">Choose file</label>
                 </div>
             </div>

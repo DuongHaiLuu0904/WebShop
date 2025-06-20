@@ -1,66 +1,69 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" th:replace="~{/layout/index :: dynamic(~{::main})}">
+
 <body>
-<main class="main-content">
-    <div class="page-header-area">
-        <div class="container">
-            <div class="row">
-                <div class="col-12 text-center">
-                    <div class="page-header-content">
-                        <nav class="breadcrumb-area">
-                            <ul class="breadcrumb">
-                                <li>
-                                    <a href="/">Home</a>
-                                </li>
-                                <li class="breadcrumb-sep">/</li>
-                                <li>Your Orders</li>
-                            </ul>
-                        </nav>
-                        <h4 class="title">Your Orders</h4>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="container my-3">
-        <section class="product-area shopping-cart-area">
-            <div class="row my-3">
-                <div class="col-12">
-                    <div class="bg-success text-white p-3">MY PURCHASES AND ORDERS</div>
-                    <div class="shopping-cart-wrap">
-                        <div class="cart-table table-responsive">
-                            <table class="table">
-                                <thead>
-                                <tr>
-                                    <th class="text-center">No.</th>
-                                    <th>Order No.</th>
-                                    <th>Order Date</th>
-                                    <th>Shipping Address</th>
-                                    <th class="text-center">#</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr th:each="order,state : *{orders}">
-                                    <td class="align-middle">[[${state.index}]]</td>
-                                    <td class="align-middle">[[${order.id}]]</td>
-                                    <td class="align-middle">[[${#dates.format(order.createDate, 'dd/MM/yyyy')}]]</td>
-                                    <td class="align-middle text-start">[[${order.address}]]</td>
-                                    <td class="align-middle">
-                                        <a th:href="@{|/order/detail/${order.id}|}"
-                                           class="btn btn-sm btn-default border-0"
-                                           title="View your Order Details">
-                                            <i class="fa fa-eye"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
+    <main class="main-content">
+        <div class="page-header-area">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <div class="page-header-content">
+                            <nav class="breadcrumb-area">
+                                <ul class="breadcrumb">
+                                    <li>
+                                        <a href="/">Home</a>
+                                    </li>
+                                    <li class="breadcrumb-sep">/</li>
+                                    <li>Your Orders</li>
+                                </ul>
+                            </nav>
+                            <h4 class="title">Your Orders</h4>
                         </div>
                     </div>
                 </div>
             </div>
-        </section>
-    </div>
-</main>
+        </div>
+        <div class="container my-3">
+            <section class="product-area shopping-cart-area">
+                <div class="row my-3">
+                    <div class="col-12">
+                        <div class="bg-success text-white p-3">MY PURCHASES AND ORDERS</div>
+                        <div class="shopping-cart-wrap">
+                            <div class="cart-table table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">No.</th>
+                                            <th>Order No.</th>
+                                            <th>Order Date</th>
+                                            <th>Shipping Address</th>
+                                            <th class="text-center">#</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="order,state : *{orders}">
+                                            <td class="align-middle">[[${state.index}]]</td>
+                                            <td class="align-middle">[[${order.id}]]</td>
+                                            <td class="align-middle">[[${#dates.format(order.createDate,
+                                                'dd/MM/yyyy')}]]</td>
+                                            <td class="align-middle text-start">[[${order.address}]]</td>
+                                            <td class="align-middle">
+                                                <a th:href="@{|/order/detail/${order.id}|}"
+                                                    class="btn btn-sm btn-default border-0"
+                                                    title="View your Order Details">
+                                                    <i class="fa fa-eye"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
 </body>
+
 </html>

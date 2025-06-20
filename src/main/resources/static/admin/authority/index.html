@@ -17,26 +17,27 @@
         </div>
         <table class="table table-collapse table-bordered bg-white mb-0">
             <thead>
-            <tr>
-                <th>Username</th>
-                <th>Fullname</th>
-                <th>Email</th>
-                <th ng-repeat="role in roles" class="text-center">{{role.name}}</th>
-            </tr>
+                <tr>
+                    <th>Username</th>
+                    <th>Fullname</th>
+                    <th>Email</th>
+                    <th ng-repeat="role in roles" class="text-center">{{role.name}}</th>
+                </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="acc in pager.admins">
-                <td class="align-center">{{acc.username}}</td>
-                <td class="align-center">{{acc.fullname}}</td>
-                <td class="align-center">{{acc.email}}</td>
-                <th ng-repeat="role in roles" class="align-center text-center" style="width:10%">
-                    <div class="custom-control custom-checkbox">
-                        <input type="checkbox" class="custom-control-input" id="authority-{{acc.username}}-{{role.id}}"
-                               ng-checked="authority_of(acc,role)" ng-click="authority_changed(acc,role)">
-                        <label class="custom-control-label" for="authority-{{acc.username}}-{{role.id}}"></label>
-                    </div>
-                </th>
-            </tr>
+                <tr ng-repeat="acc in pager.admins">
+                    <td class="align-center">{{acc.username}}</td>
+                    <td class="align-center">{{acc.fullname}}</td>
+                    <td class="align-center">{{acc.email}}</td>
+                    <th ng-repeat="role in roles" class="align-center text-center" style="width:10%">
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input"
+                                id="authority-{{acc.username}}-{{role.id}}" ng-checked="authority_of(acc,role)"
+                                ng-click="authority_changed(acc,role)">
+                            <label class="custom-control-label" for="authority-{{acc.username}}-{{role.id}}"></label>
+                        </div>
+                    </th>
+                </tr>
             </tbody>
         </table>
         <div class="card-footer text-center">
