@@ -23,4 +23,9 @@ public interface ProductService {
 
     Page<Product> findByCategoryId(String cid, int page, int size);
 
+    // Search methods cho tìm kiếm không phân biệt dấu
+    List<Product> findByNameIgnoringAccents(String keyword);
+    
+    List<Product> findByNameIgnoringAccentsAndCategoryId(String keyword, String categoryId);
+
 }

@@ -60,6 +60,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<Order> findByUsername(String username) {
+        if (username == null || username.trim().isEmpty()) {
+            return new java.util.ArrayList<>();
+        }
         return dao.findByUsername(username);
     }
 }

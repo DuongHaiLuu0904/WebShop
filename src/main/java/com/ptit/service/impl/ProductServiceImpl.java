@@ -10,6 +10,7 @@ import com.ptit.dao.CategoryDAO;
 import com.ptit.dao.ProductDAO;
 import com.ptit.entity.Product;
 import com.ptit.service.ProductService;
+import com.ptit.util.StringUtils;
 
 import java.util.List;
 
@@ -66,6 +67,19 @@ public class ProductServiceImpl implements ProductService {
     public Page<Product> findByCategoryId(String cid, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return pdao.findByCategoryId(cid, pageable);
+    }
+
+    @Override
+    public List<Product> findByNameIgnoringAccents(String keyword) {
+        // Xử lý keyword trước khi search
+        String processedKeyword = StringUtils.removeAccents(keyword);
+        return pdao.findByNameIgnoringAccents(processedKeyword);
+    }
+
+    @Override
+    public List<Product> findByNameIgnoringAccentsAndCategoryId(String keyword, String categoryId) {
+        String processedKeyword = StringUtils.removeAccents(keyword);
+        return pdao.findByNameIgnoringAccentsAndCategoryId(processedKeyword, categoryId);
     }
 
 }

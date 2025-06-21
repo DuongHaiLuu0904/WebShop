@@ -52,14 +52,14 @@ public class SecurityConfig {
 
                 Collection<GrantedAuthority> authorities = user.getAuthorities();
                 Map<String, Object> authentication = new HashMap<>();
-                
+
                 // Tạo user object đơn giản cho JSON serialization
                 Map<String, Object> userInfo = new HashMap<>();
                 userInfo.put("username", username);
                 userInfo.put("fullname", user.getFullname());
                 userInfo.put("email", user.getEmail());
                 userInfo.put("photo", user.getPhoto());
-                
+
                 authentication.put("user", userInfo);
                 byte[] token = (username + ":" + user.getPassword()).getBytes();
                 authentication.put("token", "Basic " + Base64.getEncoder().encodeToString(token));
@@ -100,22 +100,25 @@ public class SecurityConfig {
                 .loginProcessingUrl("/auth/login")
                 .defaultSuccessUrl("/auth/login/success", false)
                 .failureUrl("/auth/login/error"));
+
         // Ghi nhớ
-        // http.rememberMe(rememberMe -> rememberMe.tokenValiditySeconds(86400));
+        http.rememberMe(rememberMe -> rememberMe.tokenValiditySeconds(86400));
+        
         // Điều khiển lỗi truy cập không đúng quyền
         http.exceptionHandling(exceptionHandling -> exceptionHandling.accessDeniedPage("/auth/unauthoried"));
+        
         // Đăng xuất
         http.logout(logout -> logout
-                .logoutUrl("/auth/logout")
-                .logoutSuccessUrl("/auth/logout/success"));
-        // OAuth2 - Đăng nhâp từ mang xã hội
-        // http.oauth2Login(oauth2 -> oauth2
-        // .loginPage("/auth/login/form")
-        // .defaultSuccessUrl("/oauth2/login/success", true)
-        // .failureUrl("/auth/login/error")
-        // .authorizationEndpoint(authorization ->
-        // authorization.baseUri("/oauth2/authorization"))
-        // );
+            .logoutUrl("/auth/logout")
+            .logoutSuccessUrl("/auth/logout/success")
+        );
+        
+         // OAuth2 - Đăng nhâp từ mang xã hội
+        http.oauth2Login(oauth2 -> oauth2
+                .loginPage("/auth/login/form")
+                .defaultSuccessUrl("/oauth2/login/success", true)
+                .failureUrl("/auth/login/error")
+                .authorizationEndpoint(authorization -> authorization.baseUri("/oauth2/authorization")));
         return http.build();
     }
 

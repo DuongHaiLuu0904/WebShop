@@ -34,6 +34,9 @@ public class OrderController {
     @RequestMapping("/order/list")
     public String list(Model model, HttpServletRequest request) {
         String username = request.getRemoteUser();
+        if (username == null) {
+            return "redirect:/auth/login/form";
+        }
         model.addAttribute("orders", orderService.findByUsername(username));
         return "order/list";
     }

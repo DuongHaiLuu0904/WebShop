@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kết quả tìm kiếm</title>
+    <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/font-awesome.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/ionicons.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/material-design-iconic-font.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/style.css">
+</head>
+<body ng-app="shopping-cart-app" ng-controller="shopping-cart-ctrl">
+    <div th:replace="~{layout/_menu}"></div>
+    
+    <main class="main-content">
+        <!-- Breadcrumb Area Start -->
+        <section class="breadcrumb-area">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="breadcrumb-content">
+                            <h2 class="title">Kết quả tìm kiếm</h2>
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item"><a th:href="@{/}">Trang chủ</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">Tìm kiếm</li>
+                                </ol>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Breadcrumb Area End -->
+
+        <!-- Product Area Start -->
+        <section class="product-area section-space">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <!-- Search Info -->
+                        <div th:if="${keyword}" class="search-info mb-4 p-3" style="background-color: #f8f9fa; border-radius: 5px;">
+                            <h4>Kết quả tìm kiếm cho: "<span th:text="${keyword}" class="text-primary"></span>"</h4>
+                            <p class="mb-0">Tìm thấy <span th:text="${#lists.size(items)}" class="fw-bold text-success"></span> sản phẩm</p>
+                        </div>
+                        
+                        <!-- No Results -->
+                        <div th:if="${#lists.isEmpty(items)}" class="no-results text-center py-5">
+                            <div class="mb-4">
+                                <i class="zmdi zmdi-search" style="font-size: 80px; color: #ddd;"></i>
+                            </div>
+                            <h3 class="mb-3">Không tìm thấy sản phẩm nào</h3>
+                            <p class="text-muted mb-4">Thử từ khóa khác hoặc duyệt qua các danh mục của chúng tôi</p>
+                            <a th:href="@{/}" class="btn btn-primary">Về trang chủ</a>
+                        </div>
+                        
+                        <!-- Products Grid -->
+                        <div th:unless="${#lists.isEmpty(items)}" class="row">
+                            <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-4" th:each="p : ${items}">
+                                <div class="product-item h-100">
+                                    <div class="product-thumb">
+                                        <img th:src="@{|/assets/images/${p.image}|}" th:alt="${p.name}" class="img-fluid w-100">
+                                        <div class="product-action">
+                                            <a th:href="@{|/product/detail/${p.id}|}" class="action-item" title="Xem chi tiết">
+                                                <i class="zmdi zmdi-eye"></i>
+                                            </a>
+                                            <a href="javascript:void(0)" class="action-item" 
+                                               ng-click="cart.add([[${p.id}]])" title="Thêm vào giỏ">
+                                                <i class="zmdi zmdi-shopping-cart-plus"></i>
+                                            </a>
+                                            <a href="javascript:void(0)" class="action-item" title="Yêu thích">
+                                                <i class="zmdi zmdi-favorite-outline"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="product-content text-center p-3">
+                                        <h4 class="title mb-2">
+                                            <a th:href="@{|/product/detail/${p.id}|}" th:text="${p.name}" 
+                                               class="text-decoration-none text-dark"></a>
+                                        </h4>
+                                        <div class="price">
+                                            <span class="new text-primary fw-bold h5" th:text="|$${p.price}|"></span>
+                                        </div>
+                                        <div class="mt-2">
+                                            <button type="button" class="btn btn-primary btn-sm" 
+                                                    ng-click="cart.add([[${p.id}]])">
+                                                <i class="zmdi zmdi-shopping-cart-plus"></i> Thêm vào giỏ
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Back to Search -->
+                        <div class="text-center mt-4">
+                            <a href="javascript:history.back()" class="btn btn-outline-secondary">
+                                <i class="zmdi zmdi-arrow-left"></i> Quay lại
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Product Area End -->
+    </main>
+    
+    <!-- Footer -->
+    <footer class="footer-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <p>&copy; 2025 SOF306 ASM. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Scripts -->
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+    <script src="assets/js/angular.min.js"></script>
+    <script src="assets/ctrl/shopping-cart-ctrl.js"></script>
+    
+    <!-- Custom styling for better search results -->
+    <style>
+        .product-item {
+            border: 1px solid #eee;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+        
+        .product-item:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        
+        .product-thumb {
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px 8px 0 0;
+        }
+        
+        .product-thumb img {
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        .product-action {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .product-item:hover .product-action {
+            opacity: 1;
+        }
+        
+        .action-item {
+            width: 35px;
+            height: 35px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #333;
+            text-decoration: none;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .action-item:hover {
+            background: #007bff;
+            color: white;
+        }
+        
+        .search-info {
+            border-left: 4px solid #007bff;
+        }
+    </style>
+</body>
+</html>

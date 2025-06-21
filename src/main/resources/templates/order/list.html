@@ -41,11 +41,10 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr th:each="order,state : *{orders}">
-                                            <td class="align-middle">[[${state.index}]]</td>
+                                        <tr th:each="order,state : ${orders}">
+                                            <td class="align-middle">[[${state.index + 1}]]</td>
                                             <td class="align-middle">[[${order.id}]]</td>
-                                            <td class="align-middle">[[${#dates.format(order.createDate,
-                                                'dd/MM/yyyy')}]]</td>
+                                            <td class="align-middle">[[${#dates.format(order.createDate, 'dd/MM/yyyy')}]]</td>
                                             <td class="align-middle text-start">[[${order.address}]]</td>
                                             <td class="align-middle">
                                                 <a th:href="@{|/order/detail/${order.id}|}"

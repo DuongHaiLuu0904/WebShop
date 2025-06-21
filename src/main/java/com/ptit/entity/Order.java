@@ -30,4 +30,17 @@ public class Order implements Serializable {
     @JsonIgnore
     @OneToMany(mappedBy = "order")
     List<OrderDetail> orderDetails;
+
+    
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
+
+    public void setCustomer(Customers customer) {
+        this.customer = customer;
+    }
 }
