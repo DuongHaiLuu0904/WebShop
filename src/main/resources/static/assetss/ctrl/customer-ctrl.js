@@ -13,12 +13,14 @@ app.controller("customer-ctrl", function ($scope, $http) {
             showConfirmButton: false,
             timer: 2000,
         });
-    }
+    };
 
     $scope.initialize = function () {
         //load customer
         $http.get(url).then(resp => {
             $scope.items = resp.data;
+        }).catch(error => {
+            console.error("Error loading customers:", error);
         });
 
         //load roles
@@ -26,6 +28,9 @@ app.controller("customer-ctrl", function ($scope, $http) {
             $scope.roles = resp.data;
         })
     }
+
+    // Expose Object.keys to scope for template
+    $scope.Object = window.Object;
 
     //khoi dau
     $scope.initialize();
@@ -90,7 +95,7 @@ app.controller("customer-ctrl", function ($scope, $http) {
         data.append('file', files[0]);
         $http.post(url2, data, {
             transformRequest: angular.identity,
-            headers: {'Content-Type': undefined}
+            headers: { 'Content-Type': undefined }
         }).then(resp => {
             $scope.form.image = resp.data.name;
         }).catch(error => {

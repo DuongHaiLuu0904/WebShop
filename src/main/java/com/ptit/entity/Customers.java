@@ -69,6 +69,8 @@ public class Customers implements Serializable {
 
     public void setToken(String token) {
         this.token = token;
+    }    public String getUsername() {
+        return username;
     }
 
     public void setPassword(String newPassword) {

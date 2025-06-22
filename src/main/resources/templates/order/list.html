@@ -30,21 +30,34 @@
                         <div class="bg-success text-white p-3">MY PURCHASES AND ORDERS</div>
                         <div class="shopping-cart-wrap">
                             <div class="cart-table table-responsive">
-                                <table class="table">
-                                    <thead>
+                                <table class="table">                                    <thead>
                                         <tr>
                                             <th class="text-center">No.</th>
                                             <th>Order No.</th>
                                             <th>Order Date</th>
+                                            <th>Payment Status</th>
+                                            <th>Total Amount</th>
                                             <th>Shipping Address</th>
                                             <th class="text-center">#</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
-                                        <tr th:each="order,state : ${orders}">
+                                    <tbody>                                        <tr th:each="order,state : ${orders}">
                                             <td class="align-middle">[[${state.index + 1}]]</td>
                                             <td class="align-middle">[[${order.id}]]</td>
                                             <td class="align-middle">[[${#dates.format(order.createDate, 'dd/MM/yyyy')}]]</td>
+                                            <td class="align-middle">
+                                                <span th:class="${order.paymentStatus == 'PAID' ? 'badge bg-success' : 
+                                                               order.paymentStatus == 'PENDING' ? 'badge bg-warning' : 
+                                                               'badge bg-danger'}"
+                                                      th:text="${order.paymentStatus}">
+                                                </span>
+                                            </td>
+                                            <td class="align-middle">
+                                                <span th:if="${order.totalAmount != null}" 
+                                                      th:text="'$' + ${#numbers.formatDecimal(order.totalAmount,0,'COMMA',2,'POINT')}">
+                                                </span>
+                                                <span th:unless="${order.totalAmount != null}">N/A</span>
+                                            </td>
                                             <td class="align-middle text-start">[[${order.address}]]</td>
                                             <td class="align-middle">
                                                 <a th:href="@{|/order/detail/${order.id}|}"

@@ -276,8 +276,7 @@ app.controller("shopping-ctrl", function ($scope, $http, $rootScope, $timeout) {
                     quantity: item.qty || item.quantity
                 }
             });
-        },
-        purchase() {
+        },        purchase() {
             if (!$rootScope.$auth || !$rootScope.$auth.username) {
                 sweetalert("Vui lòng đăng nhập để đặt hàng!");
                 return;
@@ -288,15 +287,61 @@ app.controller("shopping-ctrl", function ($scope, $http, $rootScope, $timeout) {
                 return;
             }
 
-            var order = angular.copy(this);
-            // Thực hiện đặt hàng
-            $http.post(url1, order).then(resp => {
-                sweetalert("Đặt hàng thành công!");
-                $scope.cart.clear();// xóa giỏ hàng từ database
-                location.href = "/order/detail/" + resp.data.id; // chuyển đến trang chi tiết đơn hàng
+            if (!this.address || this.address.trim() === "") {
+                sweetalert("Vui lòng nhập địa chỉ giao hàng!");
+                return;
+            }
+
+            // Lưu thông tin đơn hàng vào sessionStorage để sử dụng sau khi thanh toán thành công
+            var orderData = {
+                customer: { username: $rootScope.$auth.username },
+                address: this.address,
+                orderDetails: $scope.cart.items.map(item => {
+                    return {
+                        product: { id: item.id },
+                        price: item.price,
+                        quantity: item.qty || item.quantity
+                    }
+                }),
+                totalAmount: $scope.cart.amount
+            };
+            
+            sessionStorage.setItem('pendingOrder', JSON.stringify(orderData));
+            console.log("Saved pending order data:", orderData);
+            
+            // Tạo yêu cầu thanh toán VNPAY với orderId tạm thời
+            var tempOrderId = 'TEMP_' + Date.now();
+            var paymentData = {
+                orderId: tempOrderId,
+                amount: Math.round($scope.cart.amount),
+                orderInfo: "Thanh toan don hang",
+                customerUsername: $rootScope.$auth.username
+            };
+            
+            console.log("Sending payment data to VNPay:", paymentData);
+            
+            // Gọi API tạo URL thanh toán VNPAY
+            $http.post("/vnpay/create-payment", paymentData).then(resp => {
+                console.log("Payment response received:", resp.data);
+                if (resp.data && resp.data.paymentUrl) {
+                    console.log("Redirecting to payment URL:", resp.data.paymentUrl);
+                    // Chuyển hướng đến trang thanh toán VNPAY
+                    window.location.href = resp.data.paymentUrl;
+                } else {
+                    sweetalert("Không nhận được URL thanh toán từ VNPay");
+                }
             }).catch(error => {
-                sweetalert("Đặt hàng lỗi!");
-            })
+                console.log("Payment URL Error:", error);
+                var errorMessage = "Lỗi tạo URL thanh toán";
+                if (error.data && error.data.error) {
+                    errorMessage += ": " + error.data.error;
+                } else if (error.data) {
+                    errorMessage += ": " + error.data;
+                } else if (error.message) {
+                    errorMessage += ": " + error.message;
+                }
+                sweetalert(errorMessage);
+            });
         }
     }
 })

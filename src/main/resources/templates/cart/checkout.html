@@ -46,8 +46,9 @@
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="form-floating">
-                                                <span class="form-control" style="line-height: 2.25;">{{order.createDate
-                                                    | date:'dd-MM-yyyy'}}</span>
+                                                <span class="form-control" style="line-height: 2.25;">
+                                                    {{order.createDate | date:'dd-MM-yyyy'}}
+                                                </span>
                                                 <label>Order date</label>
                                             </div>
                                         </div>
@@ -75,10 +76,9 @@
                                                 <label>Postal code</label>
                                             </div>
                                         </div>
-                                        <div class="col-12">
-                                            <div class="btn-box">
-                                                <button class="btn-shipping" ng-click="order.purchase()">Continue to
-                                                    shipping
+                                        <div class="col-12">                                            <div class="btn-box">
+                                                <button class="btn-shipping" ng-click="order.purchase()">
+                                                    Thanh toán VNPAY
                                                 </button>
                                                 <a class="btn-return" th:href="@{/cart/view}">Return to cart</a>
                                             </div>
@@ -127,7 +127,38 @@
                 </div>
             </div>
         </section>
+        
+        <script>
+            // Khôi phục địa chỉ từ sessionStorage nếu có
+            setTimeout(function() {
+                var pendingOrder = sessionStorage.getItem('pendingOrder');
+                if (pendingOrder) {
+                    try {
+                        var orderData = JSON.parse(pendingOrder);
+                        if (orderData.address) {
+                            // Tìm input address và set giá trị
+                            var addressInput = document.querySelector('input[ng-model="order.address"]');
+                            if (addressInput) {
+                                addressInput.value = orderData.address;
+                                
+                                // Trigger Angular to update the model
+                                var scope = angular.element(addressInput).scope();
+                                if (scope) {
+                                    scope.$apply(function() {
+                                        scope.order.address = orderData.address;
+                                    });
+                                }
+                            }
+                        }
+                    } catch (e) {
+                        console.log('Error restoring address from sessionStorage:', e);
+                    }
+                }
+            }, 1000);
+        </script>
     </main>
 </body>
+
+</html>
 
 </html>

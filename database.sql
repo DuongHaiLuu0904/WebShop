@@ -55,6 +55,9 @@ CREATE TABLE Orders (
     username VARCHAR(50) NOT NULL,
     createDate DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     address VARCHAR(100) NOT NULL,
+    paymentStatus VARCHAR(20) DEFAULT 'PENDING',
+    vnpayTransactionId VARCHAR(100) NULL,
+    totalAmount DOUBLE NULL,
     CONSTRAINT PK_Orders PRIMARY KEY (id),
     CONSTRAINT FK_Orders_Customers FOREIGN KEY (username) REFERENCES Customers (username) ON UPDATE CASCADE ON DELETE CASCADE
 );

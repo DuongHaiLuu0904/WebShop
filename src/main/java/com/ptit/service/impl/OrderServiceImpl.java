@@ -26,9 +26,7 @@ public class OrderServiceImpl implements OrderService {
     OrderDetailDAO ddao;
     
     @Autowired
-    CustomerDAO customerDAO;
-
-    @Override
+    CustomerDAO customerDAO;    @Override
     public Order create(JsonNode orderData) {
         ObjectMapper mapper = new ObjectMapper();
         
@@ -37,32 +35,117 @@ public class OrderServiceImpl implements OrderService {
         order.setAddress(orderData.get("address").asText());
         order.setCreateDate(new java.util.Date());
         
+        // Set payment status
+        if (orderData.has("paymentStatus")) {
+            order.setPaymentStatus(orderData.get("paymentStatus").asText());
+        } else {
+            order.setPaymentStatus("PENDING");
+        }
+        
+        // Set VNPay transaction ID if provided
+        if (orderData.has("vnpayTransactionId") && !orderData.get("vnpayTransactionId").isNull()) {
+            order.setVnpayTransactionId(orderData.get("vnpayTransactionId").asText());
+        }
+        
+        // Set total amount if provided
+        if (orderData.has("totalAmount") && !orderData.get("totalAmount").isNull()) {
+            order.setTotalAmount(orderData.get("totalAmount").asDouble());
+        }
+        
         // Handle customer mapping
         if (orderData.has("customer") && orderData.get("customer").has("username")) {
             String username = orderData.get("customer").get("username").asText();
             Customers customer = customerDAO.findById(username).orElse(null);
             order.setCustomer(customer);
         }
-        
-        dao.save(order);
+          dao.save(order);
 
         TypeReference<List<OrderDetail>> type = new TypeReference<List<OrderDetail>>() {};
         List<OrderDetail> details = mapper.convertValue(orderData.get("orderDetails"), type).stream()
                 .peek(d -> d.setOrder(order)).collect(Collectors.toList());
         ddao.saveAll(details);
+        
+        // Calculate and update total amount if not provided
+        if (order.getTotalAmount() == null) {
+            double totalAmount = details.stream()
+                    .mapToDouble(detail -> detail.getPrice() * detail.getQuantity())
+                    .sum();
+            order.setTotalAmount(totalAmount);
+            dao.save(order);
+        }
+        
         return order;
-    }
-
-    @Override
+    }    @Override
     public Order findById(Long id) {
-        return dao.findById(id).get();
-    }
-
-    @Override
+        Order order = dao.findById(id).orElse(null);
+        if (order != null && order.getTotalAmount() == null && order.getOrderDetails() != null) {
+            // Auto-calculate total amount if it's null
+            double totalAmount = order.getOrderDetails().stream()
+                    .mapToDouble(detail -> detail.getPrice() * detail.getQuantity())
+                    .sum();
+            order.setTotalAmount(totalAmount);
+            dao.save(order);
+        }
+        return order;
+    }@Override
     public List<Order> findByUsername(String username) {
         if (username == null || username.trim().isEmpty()) {
             return new java.util.ArrayList<>();
         }
         return dao.findByUsername(username);
+    }
+
+    @Override
+    public Order updatePaymentStatus(Long orderId, String paymentStatus) {
+        Order order = dao.findById(orderId).orElse(null);
+        if (order != null) {
+            order.setPaymentStatus(paymentStatus);
+            dao.save(order);
+        }
+        return order;
+    }
+
+    @Override
+    public Order updateVnpayTransactionId(Long orderId, String vnpayTransactionId) {
+        Order order = dao.findById(orderId).orElse(null);
+        if (order != null) {
+            order.setVnpayTransactionId(vnpayTransactionId);
+            dao.save(order);
+        }
+        return order;
+    }    @Override
+    public Order updateTotalAmount(Long orderId, Double totalAmount) {
+        Order order = dao.findById(orderId).orElse(null);
+        if (order != null) {
+            order.setTotalAmount(totalAmount);
+            dao.save(order);
+        }
+        return order;
+    }
+
+    @Override
+    public List<Order> findByPaymentStatus(String paymentStatus) {
+        return dao.findByPaymentStatus(paymentStatus);
+    }
+
+    @Override
+    public Order findByVnpayTransactionId(String vnpayTransactionId) {
+        return dao.findByVnpayTransactionId(vnpayTransactionId);
+    }    @Override
+    public List<Order> findByUsernameAndPaymentStatus(String username, String paymentStatus) {
+        return dao.findByUsernameAndPaymentStatus(username, paymentStatus);
+    }
+
+    @Override
+    public Order calculateAndUpdateTotalAmount(Long orderId) {
+        Order order = dao.findById(orderId).orElse(null);
+        if (order != null && order.getOrderDetails() != null) {
+            double totalAmount = order.getOrderDetails().stream()
+                    .mapToDouble(detail -> detail.getPrice() * detail.getQuantity())
+                    .sum();
+            order.setTotalAmount(totalAmount);
+            dao.save(order);
+        }
+        return order;
     }
 }

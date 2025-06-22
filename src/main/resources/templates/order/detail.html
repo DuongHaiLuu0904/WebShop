@@ -40,9 +40,23 @@
                             <label class="form-label">Purchased Date:</label>
                             <input th:field="*{createDate}" class="form-control" readonly>
                         </div>
-                        <div class="form-group col-sm-12 mb-3">
+                        <div class="form-group col-sm-4">
+                            <label class="form-label">Payment Status:</label>
+                            <input th:field="*{paymentStatus}" class="form-control" readonly>
+                        </div>
+                        <div class="form-group col-sm-4">
+                            <label class="form-label">Total Amount:</label>
+                            <input
+                                th:value="${order.totalAmount != null ? '$' + #numbers.formatDecimal(order.totalAmount,0,'COMMA',2,'POINT') : '$' + #numbers.formatDecimal(#aggregates.sum(order.orderDetails.![price * quantity]),0,'COMMA',2,'POINT')}"
+                                class="form-control" readonly>
+                        </div>
+                        <div class="form-group col-sm-8 mb-3">
                             <label class="form-label">Shipping Address:</label>
                             <input th:field="*{address}" class="form-control" readonly>
+                        </div>
+                        <div class="form-group col-sm-4 mb-3" th:if="*{vnpayTransactionId != null}">
+                            <label class="form-label">VNPay Transaction ID:</label>
+                            <input th:field="*{vnpayTransactionId}" class="form-control" readonly>
                         </div>
                     </div>
                 </div>
