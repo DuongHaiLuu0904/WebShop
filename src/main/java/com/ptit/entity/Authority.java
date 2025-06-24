@@ -8,7 +8,7 @@ import java.io.Serializable;
 @SuppressWarnings("serial")
 @Data
 @Entity
-@Table(name = "Authorities", uniqueConstraints = {@UniqueConstraint(columnNames = {"Username", "Roleid"})})
+@Table(name = "Authorities", uniqueConstraints = {@UniqueConstraint(columnNames = {"customerId", "roleId"})})
 public class Authority implements Serializable {
 
     @Id
@@ -16,11 +16,11 @@ public class Authority implements Serializable {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "Username")
+    @JoinColumn(name = "customerId")
     private Customers customer;
 
     @ManyToOne
-    @JoinColumn(name = "Roleid")
+    @JoinColumn(name = "roleId")
     private Role role;
 
     // Thêm phương thức getRole để trả về đối tượng Role

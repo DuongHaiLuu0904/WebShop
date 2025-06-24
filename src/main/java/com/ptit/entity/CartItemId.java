@@ -5,23 +5,23 @@ import java.util.Objects;
 
 public class CartItemId implements Serializable {
     
-    private String username;
+    private Integer customerId;
     private Integer productId;
     
     public CartItemId() {
     }
     
-    public CartItemId(String username, Integer productId) {
-        this.username = username;
+    public CartItemId(Integer customerId, Integer productId) {
+        this.customerId = customerId;
         this.productId = productId;
     }
     
-    public String getUsername() {
-        return username;
+    public Integer getCustomerId() {
+        return customerId;
     }
     
-    public void setUsername(String username) {
-        this.username = username;
+    public void setCustomerId(Integer customerId) {
+        this.customerId = customerId;
     }
     
     public Integer getProductId() {
@@ -37,11 +37,11 @@ public class CartItemId implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CartItemId that = (CartItemId) o;
-        return Objects.equals(username, that.username) && Objects.equals(productId, that.productId);
+        return Objects.equals(customerId, that.customerId) && Objects.equals(productId, that.productId);
     }
     
     @Override
     public int hashCode() {
-        return Objects.hash(username, productId);
+        return Objects.hash(customerId, productId);
     }
 }

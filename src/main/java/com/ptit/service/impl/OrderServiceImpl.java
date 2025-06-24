@@ -51,11 +51,10 @@ public class OrderServiceImpl implements OrderService {
         if (orderData.has("totalAmount") && !orderData.get("totalAmount").isNull()) {
             order.setTotalAmount(orderData.get("totalAmount").asDouble());
         }
-        
-        // Handle customer mapping
+          // Handle customer mapping
         if (orderData.has("customer") && orderData.get("customer").has("username")) {
             String username = orderData.get("customer").get("username").asText();
-            Customers customer = customerDAO.findById(username).orElse(null);
+            Customers customer = customerDAO.findByUsername(username);
             order.setCustomer(customer);
         }
           dao.save(order);

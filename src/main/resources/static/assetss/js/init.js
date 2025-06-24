@@ -12,3 +12,10 @@ $(document).ready(function () {
 
     table.buttons().container().appendTo('#datatable-buttons_wrapper .col-md-6:eq(0)');
 });
+
+// Helper function for image URL - now just returns the URL directly
+app.filter('imageUrl', function() {
+    return function(imagePath) {
+        return imagePath || 'https://res.cloudinary.com/djhidgxfo/image/upload/v1/images/cloud-upload.jpg';
+    };
+});

@@ -12,20 +12,20 @@ import java.util.List;
 
 public interface CartItemDAO extends JpaRepository<CartItem, CartItemId> {
     
-    @Query("SELECT c FROM CartItem c WHERE c.username = ?1")
-    List<CartItem> findByUsername(String username);
+    @Query("SELECT c FROM CartItem c WHERE c.customerId = ?1")
+    List<CartItem> findByCustomerId(Integer customerId);
     
-    @Query("SELECT c FROM CartItem c WHERE c.username = ?1 AND c.productId = ?2")
-    CartItem findByUsernameAndProductId(String username, Integer productId);
+    @Query("SELECT c FROM CartItem c WHERE c.customerId = ?1 AND c.productId = ?2")
+    CartItem findByCustomerIdAndProductId(Integer customerId, Integer productId);
     
     @Modifying
     @Transactional
-    @Query("DELETE FROM CartItem c WHERE c.username = ?1")
-    void deleteByUsername(String username);
+    @Query("DELETE FROM CartItem c WHERE c.customerId = ?1")
+    void deleteByCustomerId(Integer customerId);
     
-    @Query("SELECT SUM(c.quantity) FROM CartItem c WHERE c.username = ?1")
-    Integer getTotalQuantityByUsername(String username);
+    @Query("SELECT SUM(c.quantity) FROM CartItem c WHERE c.customerId = ?1")
+    Integer getTotalQuantityByCustomerId(Integer customerId);
     
-    @Query("SELECT SUM(c.quantity * c.price) FROM CartItem c WHERE c.username = ?1")
-    Double getTotalAmountByUsername(String username);
+    @Query("SELECT SUM(c.quantity * c.price) FROM CartItem c WHERE c.customerId = ?1")
+    Double getTotalAmountByCustomerId(Integer customerId);
 }

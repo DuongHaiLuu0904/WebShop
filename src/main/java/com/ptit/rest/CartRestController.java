@@ -22,17 +22,15 @@ public class CartRestController {
     CartItemDAO cartItemDAO;
 
     @Autowired
-    ProductDAO productDAO;
-
-    // Lấy tất cả items trong giỏ hàng của user
-    @GetMapping("/{username}")
-    public List<CartItem> getCartItems(@PathVariable("username") String username) {
-        return cartItemDAO.findByUsername(username);
+    ProductDAO productDAO;    // Lấy tất cả items trong giỏ hàng của user
+    @GetMapping("/{customerId}")
+    public List<CartItem> getCartItems(@PathVariable("customerId") Integer customerId) {
+        return cartItemDAO.findByCustomerId(customerId);
     }
 
     // Thêm sản phẩm vào giỏ hàng
-    @PostMapping("/{username}/add/{productId}")
-    public ResponseEntity<CartItem> addToCart(@PathVariable("username") String username,
+    @PostMapping("/{customerId}/add/{productId}")
+    public ResponseEntity<CartItem> addToCart(@PathVariable("customerId") Integer customerId,
             @PathVariable("productId") Integer productId) {
         try {
             // Kiểm tra sản phẩm có tồn tại không
@@ -44,7 +42,7 @@ public class CartRestController {
             Product product = productOpt.get();
 
             // Kiểm tra xem sản phẩm đã có trong giỏ hàng chưa
-            CartItem existingItem = cartItemDAO.findByUsernameAndProductId(username, productId);
+            CartItem existingItem = cartItemDAO.findByCustomerIdAndProductId(customerId, productId);
 
             if (existingItem != null) {
                 // Nếu đã có thì tăng số lượng
@@ -52,28 +50,26 @@ public class CartRestController {
                 return ResponseEntity.ok(cartItemDAO.save(existingItem));
             } else {
                 // Nếu chưa có thì tạo mới
-                CartItem newItem = new CartItem(username, productId, 1, product.getPrice());
+                CartItem newItem = new CartItem(customerId, productId, 1, product.getPrice());
                 return ResponseEntity.ok(cartItemDAO.save(newItem));
             }
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
-    }
-
-    // Cập nhật số lượng sản phẩm trong giỏ hàng
-    @PutMapping("/{username}/update/{productId}")
-    public ResponseEntity<CartItem> updateQuantity(@PathVariable("username") String username,
+    }    // Cập nhật số lượng sản phẩm trong giỏ hàng
+    @PutMapping("/{customerId}/update/{productId}")
+    public ResponseEntity<CartItem> updateQuantity(@PathVariable("customerId") Integer customerId,
             @PathVariable("productId") Integer productId,
             @RequestParam("quantity") Integer quantity) {
         try {
-            CartItem item = cartItemDAO.findByUsernameAndProductId(username, productId);
+            CartItem item = cartItemDAO.findByCustomerIdAndProductId(customerId, productId);
             if (item != null) {
                 if (quantity > 0) {
                     item.setQuantity(quantity);
                     return ResponseEntity.ok(cartItemDAO.save(item));
                 } else {
                     // Nếu quantity <= 0 thì xóa item
-                    cartItemDAO.deleteById(new CartItemId(username, productId));
+                    cartItemDAO.deleteById(new CartItemId(customerId, productId));
                     return ResponseEntity.ok().build();
                 }
             }
@@ -84,11 +80,11 @@ public class CartRestController {
     }
 
     // Xóa sản phẩm khỏi giỏ hàng
-    @DeleteMapping("/{username}/remove/{productId}")
-    public ResponseEntity<Void> removeFromCart(@PathVariable("username") String username,
+    @DeleteMapping("/{customerId}/remove/{productId}")
+    public ResponseEntity<Void> removeFromCart(@PathVariable("customerId") Integer customerId,
             @PathVariable("productId") Integer productId) {
         try {
-            cartItemDAO.deleteById(new CartItemId(username, productId));
+            cartItemDAO.deleteById(new CartItemId(customerId, productId));
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
@@ -96,10 +92,10 @@ public class CartRestController {
     }
 
     // Xóa tất cả sản phẩm trong giỏ hàng
-    @DeleteMapping("/{username}/clear")
-    public ResponseEntity<Void> clearCart(@PathVariable("username") String username) {
+    @DeleteMapping("/{customerId}/clear")
+    public ResponseEntity<Void> clearCart(@PathVariable("customerId") Integer customerId) {
         try {
-            cartItemDAO.deleteByUsername(username);
+            cartItemDAO.deleteByCustomerId(customerId);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
@@ -107,10 +103,10 @@ public class CartRestController {
     }
 
     // Lấy tổng số lượng sản phẩm trong giỏ hàng
-    @GetMapping("/{username}/count")
-    public ResponseEntity<Integer> getCartCount(@PathVariable("username") String username) {
+    @GetMapping("/{customerId}/count")
+    public ResponseEntity<Integer> getCartCount(@PathVariable("customerId") Integer customerId) {
         try {
-            Integer count = cartItemDAO.getTotalQuantityByUsername(username);
+            Integer count = cartItemDAO.getTotalQuantityByCustomerId(customerId);
             return ResponseEntity.ok(count != null ? count : 0);
         } catch (Exception e) {
             return ResponseEntity.ok(0);
@@ -118,10 +114,10 @@ public class CartRestController {
     }
 
     // Lấy tổng tiền trong giỏ hàng
-    @GetMapping("/{username}/amount")
-    public ResponseEntity<Double> getCartAmount(@PathVariable("username") String username) {
+    @GetMapping("/{customerId}/amount")
+    public ResponseEntity<Double> getCartAmount(@PathVariable("customerId") Integer customerId) {
         try {
-            Double amount = cartItemDAO.getTotalAmountByUsername(username);
+            Double amount = cartItemDAO.getTotalAmountByCustomerId(customerId);
             return ResponseEntity.ok(amount != null ? amount : 0.0);
         } catch (Exception e) {
             return ResponseEntity.ok(0.0);

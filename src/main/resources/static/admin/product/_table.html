@@ -14,14 +14,13 @@
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="item in pager.items | filter:customProductFilter:searchText">
+                <tr ng-repeat="item in pager.items">
                     <td class="align-center">{{item.id}}</td>
                     <td class="align-center w-25">{{item.name}}</td>
                     <td class="align-center">$ {{item.price | number:2}}</td>
                     <td class="align-center">{{item.createDate | date:'dd/MM/yyyy'}}</td>
                     <td class="align-center">
-                        <img ng-src="/assets/images/{{item.image}}" style="max-width: 80px; max-height: 80px;"
-                            alt="{{item.name}}">
+                        <img ng-src="{{item.image}}" style="max-width: 80px; max-height: 80px;" alt="{{item.name}}">
                     </td>
                     <td class="align-center">{{item.category.name}}</td>
                     <td class="align-center">{{item.available?'Yes':'No'}}</td>
@@ -64,6 +63,7 @@
     function removeDiacritics(str) {
         return str.normalize('NFD').replace(/\p{Diacritic}/gu, '').replace(/đ/g, 'd').replace(/Đ/g, 'D');
     }
+
     app.filter('customProductFilter', function () {
         return function (items, searchText) {
             if (!searchText) return items;

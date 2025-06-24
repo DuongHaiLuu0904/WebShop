@@ -25,11 +25,14 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Autowired
     @Lazy
-    BCryptPasswordEncoder pe;
+    BCryptPasswordEncoder pe;    @Override
+    public Customers findById(Integer id) {
+        return adao.findById(id).orElse(null);
+    }
 
     @Override
-    public Customers findById(String username) {
-        return adao.findById(username).get();
+    public Customers findByUsername(String username) {
+        return adao.findByUsername(username);
     }
 
     @Override
@@ -40,21 +43,56 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public List<Customers> getAdministrators() {
         return adao.getAdministrators();
-    }
-
-    @Override
+    }    @Override
     public Customers create(Customers customer) {
+        // Đảm bảo token không bao giờ null khi tạo mới
+        if (customer.getToken() == null || customer.getToken().trim().isEmpty()) {
+            customer.setToken("token");
+        }
         return adao.save(customer);
-    }
-
-    @Override
+    }@Override
     public Customers update(Customers customer) {
+        // Lấy thông tin customer hiện tại từ database bằng ID
+        Customers existingCustomer = adao.findById(customer.getId()).orElse(null);
+        if (existingCustomer != null) {
+            // Cập nhật các trường từ customer mới vào existingCustomer
+            existingCustomer.setUsername(customer.getUsername());
+            existingCustomer.setPassword(customer.getPassword());
+            existingCustomer.setFullname(customer.getFullname());
+            existingCustomer.setEmail(customer.getEmail());
+            if (customer.getPhoto() != null && !customer.getPhoto().trim().isEmpty()) {
+                existingCustomer.setPhoto(customer.getPhoto());
+            }
+            
+            // Giữ lại token cũ nếu token mới null hoặc empty
+            if (customer.getToken() == null || customer.getToken().trim().isEmpty()) {
+                // Không thay đổi token cũ
+            } else {
+                existingCustomer.setToken(customer.getToken());
+            }
+            
+            // Đảm bảo token không bao giờ null
+            if (existingCustomer.getToken() == null) {
+                existingCustomer.setToken("token");
+            }
+            
+            return adao.save(existingCustomer);
+        }
         return adao.save(customer);
     }
 
     @Override
-    public void delete(String username) {
-        adao.deleteById(username);
+    public void delete(Integer id) {
+        adao.deleteById(id);
+    }
+
+    @Override
+    public Customers saveCustomer(Customers customer) {
+        // Đảm bảo token không bao giờ null
+        if (customer.getToken() == null) {
+            customer.setToken("token");
+        }
+        return adao.save(customer);
     }
 
     @Override

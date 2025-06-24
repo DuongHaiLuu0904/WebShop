@@ -19,10 +19,8 @@ public class Order implements Serializable {
 
     @Temporal(TemporalType.DATE)
     @Column(name = "Createdate")
-    Date createDate = new Date();
-
-    @ManyToOne
-    @JoinColumn(name = "Username")
+    Date createDate = new Date();    @ManyToOne
+    @JoinColumn(name = "customerId")
     Customers customer;
 
     @Column(name = "paymentStatus")
@@ -32,7 +30,9 @@ public class Order implements Serializable {
     String vnpayTransactionId;
 
     @Column(name = "totalAmount")
-    Double totalAmount;    @JsonIgnore
+    Double totalAmount;    
+    
+    @JsonIgnore
     @OneToMany(mappedBy = "order")
     List<OrderDetail> orderDetails;
 

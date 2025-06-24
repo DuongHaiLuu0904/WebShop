@@ -7,6 +7,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.ptit.interceptor.GlobalInterceptor;
+import com.ptit.interceptor.AuthenticationInterceptor;
 
 import org.springframework.lang.NonNull;
 
@@ -15,6 +16,9 @@ public class InterceptorConfig implements WebMvcConfigurer {
 
     @Autowired
     GlobalInterceptor globalInterceptor;
+    
+    @Autowired
+    AuthenticationInterceptor authenticationInterceptor;
 
     @Override
     public void addCorsMappings(@NonNull CorsRegistry registry) {
@@ -25,6 +29,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
     public void addInterceptors(@NonNull InterceptorRegistry registry) {
         registry.addInterceptor(globalInterceptor).addPathPatterns("/**").excludePathPatterns("/rest/**", "/admin/**",
                 "/assets/**", "/assetss/**");
+        registry.addInterceptor(authenticationInterceptor).addPathPatterns("/**");
     }
 
 }

@@ -2,10 +2,11 @@ app.controller("customer-ctrl", function ($scope, $http) {
     var url = "/rest/customers";
     var url1 = "/rest/roles";
     var url2 = "/rest/upload/images";
+    
     $scope.roles = [];
     $scope.items = [];
-    $scope.form = {};
-
+    $scope.form = {}; 
+    
     var sweetalert = function (text) {
         Swal.fire({
             icon: "success",
@@ -13,8 +14,8 @@ app.controller("customer-ctrl", function ($scope, $http) {
             showConfirmButton: false,
             timer: 2000,
         });
-    };
-
+    };   
+    
     $scope.initialize = function () {
         //load customer
         $http.get(url).then(resp => {
@@ -33,18 +34,18 @@ app.controller("customer-ctrl", function ($scope, $http) {
     $scope.Object = window.Object;
 
     //khoi dau
-    $scope.initialize();
-
-    //xoa form
+    $scope.initialize();    //xoa form
     $scope.reset = function () {
         $scope.form = {
-            image: 'cloud-upload.jpg',
+            photo: null, // Start with no photo to show upload placeholder
         };
-    }
-
-    //hien thi len form
+    }    //hien thi len form
     $scope.edit = function (item) {
         $scope.form = angular.copy(item);
+        // Ensure photo field exists, set to null if not present
+        if (!$scope.form.photo) {
+            $scope.form.photo = null;
+        }
         $(".nav-tabs a:eq(0)").tab('show');
     }
 
@@ -60,16 +61,21 @@ app.controller("customer-ctrl", function ($scope, $http) {
             sweetalert("Lỗi thêm mới tài khoản!");
             console.log("Error", error);
         });
-    }
-
-    //cap nhat sp
-    $scope.update = function () {
+    }    //cap nhat sp
+    $scope.update = function (skipReset) {
         var item = angular.copy($scope.form);
-        $http.put(`${url}/${item.username}`, item).then(resp => {
-            var index = $scope.items.findIndex(p => p.username == item.username);
-            $scope.items[index] = item;
-            $scope.reset();
+        // Sử dụng ID thay vì username để cập nhật
+        $http.patch(`${url}/${item.id}`, item).then(resp => {
+            var index = $scope.items.findIndex(p => p.id == item.id);
+            $scope.items[index] = resp.data;
+
+            // Only reset if not called from image upload
+            if (!skipReset) {
+                $scope.reset();
+            }
+
             sweetalert("Cập nhật tài khoản thành công!");
+            console.log("Customer updated successfully with image:", resp.data.image);
         }).catch(error => {
             sweetalert("Lỗi cập nhật tài khoản!");
             console.log("Error", error);
@@ -78,8 +84,8 @@ app.controller("customer-ctrl", function ($scope, $http) {
 
     //xoa sp
     $scope.delete = function (item) {
-        $http.delete(`${url}/${item.username}`).then(resp => {
-            var index = $scope.items.findIndex(p => p.username == item.username);
+        $http.delete(`${url}/${item.id}`).then(resp => {
+            var index = $scope.items.findIndex(p => p.id == item.id);
             $scope.items.splice(index, 1);
             $scope.reset();
             sweetalert("Xóa tài khoản thành công!");
@@ -87,20 +93,53 @@ app.controller("customer-ctrl", function ($scope, $http) {
             sweetalert("Lỗi xóa tài khoản!");
             console.log("Error", error);
         });
-    }
-
-    //upload hinh
+    }    //upload hinh
     $scope.imageChanged = function (files) {
+        if (!files || files.length === 0) {
+            sweetalert("Vui lòng chọn file!");
+            return;
+        }
+
+        var file = files[0];
+
+        // Validate file type
+        if (!file.type.startsWith('image/')) {
+            sweetalert("Vui lòng chọn file hình ảnh!");
+            return;
+        }
+
+        // Validate file size (max 5MB)
+        if (file.size > 5 * 1024 * 1024) {
+            sweetalert("File quá lớn! Vui lòng chọn file nhỏ hơn 5MB!");
+            return;
+        }
+
         var data = new FormData();
-        data.append('file', files[0]);
-        $http.post(url2, data, {
+        data.append('file', file);
+
+        // Show loading
+        console.log("Uploading file:", file.name, "Size:", file.size); $http.post(url2, data, {
             transformRequest: angular.identity,
             headers: { 'Content-Type': undefined }
         }).then(resp => {
-            $scope.form.image = resp.data.name;
+            console.log("Upload response:", resp.data);
+            if (resp.data && resp.data.url) {
+                // Use URL from Cloudinary response, assign to photo field (not image)
+                $scope.form.photo = resp.data.url;
+                console.log("Photo URL set to:", $scope.form.photo);
+                sweetalert("Tải lên hình ảnh thành công!");
+                // Auto-save if this is an existing customer (has ID)
+                if ($scope.form.id) {
+                    console.log("Auto-updating customer with new photo...");
+                    $scope.update(true); // Skip reset after auto-update
+                }
+            } else {
+                console.error("No URL in response:", resp.data);
+                sweetalert("Lỗi: Không nhận được URL ảnh từ server!");
+            }
         }).catch(error => {
-            sweetalert("Lỗi tải lên hình ảnh!");
-            console.log("Error", error);
+            console.error("Upload error:", error);
+            sweetalert("Lỗi tải lên hình ảnh: " + (error.data ? error.data.message : error.statusText));
         })
     }
 

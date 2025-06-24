@@ -22,6 +22,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 public class Customers implements Serializable {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Integer id;
+
     @NotBlank(message = "Không được để trống")
     String username;
 
@@ -65,16 +68,24 @@ public class Customers implements Serializable {
 
     public void setPhoto(String photo) {
         this.photo = photo;
-    }
-
-    public void setToken(String token) {
+    }    public void setToken(String token) {
         this.token = token;
-    }    public String getUsername() {
-        return username;
     }
 
-    public void setPassword(String newPassword) {
-        this.password = newPassword;
+    public String getToken() {
+        return token;
+    }
+
+    public void setFullname(String fullname) {
+        this.fullname = fullname;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     // Chỉnh sửa phương thức getAuthorities để trả về danh sách quyền
@@ -82,5 +93,22 @@ public class Customers implements Serializable {
         return authorities.stream()
                 .map(authority -> new SimpleGrantedAuthority("ROLE_" + authority.getRole().getId()))
                 .collect(Collectors.toList());
+    }
+
+    // Getter and Setter methods (in case Lombok doesn't work properly)
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

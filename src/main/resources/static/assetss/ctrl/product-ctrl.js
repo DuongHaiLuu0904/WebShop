@@ -33,12 +33,28 @@ app.controller("product-ctrl", function ($scope, $http) {
     //khoi dau
     $scope.initialize();
 
+    // Search functionality
+    $scope.searchText = '';
+    
+    // Function to get filtered items
+    $scope.getFilteredItems = function() {
+        if (!$scope.searchText) return $scope.items;
+        
+        var searchLower = $scope.searchText.toLowerCase();
+        return $scope.items.filter(function(item) {
+            return (item.name && item.name.toLowerCase().includes(searchLower)) ||
+                   (item.id && item.id.toString().includes(searchLower)) ||
+                   (item.price && item.price.toString().includes(searchLower)) ||
+                   (item.category && item.category.name && item.category.name.toLowerCase().includes(searchLower));
+        });
+    };
+
     //xoa form
     $scope.reset = function () {
         $scope.form = {
             createDate: new Date(),
-            image: 'cloud-upload.jpg',
-            ivailable: true,
+            image: 'https://res.cloudinary.com/djhidgxfo/image/upload/v1/images/cloud-upload.jpg',
+            available: true,
         };
     }
 
@@ -87,9 +103,7 @@ app.controller("product-ctrl", function ($scope, $http) {
             sweetalert("Lỗi xóa sản phẩm!");
             console.log("Error", error);
         });
-    }
-
-    //upload hinh
+    }    //upload hinh
     $scope.imageChanged = function (files) {
         var data = new FormData();
         data.append('file', files[0]);
@@ -97,23 +111,24 @@ app.controller("product-ctrl", function ($scope, $http) {
             transformRequest: angular.identity,
             headers: {'Content-Type': undefined}
         }).then(resp => {
-            $scope.form.image = resp.data.name;
+            // Use URL from Cloudinary response, fallback to old format
+            $scope.form.image = resp.data.url;
         }).catch(error => {
             sweetalert("Lỗi tải lên hình ảnh!");
             console.log("Error", error);
         })
-    }
-
-    //phan trang
+    }    //phan trang
     $scope.pager = {
         page: 0,
         size: 10,
         get items() {
+            var filteredItems = $scope.getFilteredItems();
             var start = this.page * this.size;
-            return $scope.items.slice(start, start + this.size);
+            return filteredItems.slice(start, start + this.size);
         },
         get count() {
-            return Math.ceil(1.0 * $scope.items.length / this.size)
+            var filteredItems = $scope.getFilteredItems();
+            return Math.ceil(1.0 * filteredItems.length / this.size);
         },
         first() {
             this.page = 0;

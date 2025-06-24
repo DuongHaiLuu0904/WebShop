@@ -1,4 +1,5 @@
-<div class="row mx-0 bg-white" ng-if="items">    <div class="col-12 py-3">
+<div class="row mx-0 bg-white" ng-if="items">
+    <div class="col-12 py-3">
         <table class="table table-collapse table-bordered">
             <thead>
                 <tr>
@@ -16,7 +17,10 @@
                     <td class="align-center">{{item.password}}</td>
                     <td class="align-center">{{item.fullname}}</td>
                     <td class="align-center">{{item.email}}</td>
-                    <td class="align-center">{{item.photo}}</td>
+                    <td class="align-center">
+                        <img ng-src="{{item.photo}}"
+                            style="max-width: 50px; max-height: 50px; border-radius: 50%;" alt="{{item.fullname}}">
+                    </td>
                     <td class="align-center">
                         <div class="btn-group btn-group-xs">
                             <button ng-click="edit(item)" class="btn btn-icon">

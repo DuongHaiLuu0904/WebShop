@@ -146,12 +146,10 @@ public class AuthController {
     @GetMapping("/auth/change-password")
     public String changePasswordForm(Model model) {
         return "auth/change-password";
-    }
-
-    @PostMapping("/auth/change-password")
+    }    @PostMapping("/auth/change-password")
     public String processChangePassword(Model model, @RequestParam("username") String username,
                                         @RequestParam("password") String newPassword) {
-        Customers customer = customerService.findById(username);
+        Customers customer = customerService.findByUsername(username);
         customerService.changePassword(customer, newPassword);
         model.addAttribute("message", "Change password successfully!");
         return "auth/change-password";

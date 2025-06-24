@@ -92,7 +92,7 @@
                                 <div class="shipping-cart-subtotal">
                                     <div class="shipping-cart-item" ng-repeat="item in cart.items">
                                         <div class="thumb">
-                                            <img src="assets/images/{{item.image}}">
+                                            <img ng-src="{{item.image}}">
                                             <span class="quantity">{{item.qty}}</span>
                                         </div>
                                         <div class="content">

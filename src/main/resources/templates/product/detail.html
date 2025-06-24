@@ -29,13 +29,12 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="product-single-item" data-margin-bottom="63">
-                            <div class="row">
-                                <div class="col-lg-6">
+                            <div class="row">                                <div class="col-lg-6">
                                     <div class="product-thumb">
                                         <div class="zoom zoom-hover">
                                             <a class="lightbox-image" data-fancybox="gallery"
-                                                th:src="@{|/assets/images/*{image}|}">
-                                                <img class="m-auto d-block my-5" th:src="@{|/assets/images/*{image}|}">
+                                                th:href="*{image}">
+                                                <img class="m-auto d-block my-5" th:src="*{image}">
                                             </a>
                                         </div>
                                     </div>
@@ -193,14 +192,12 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="swiper-container swiper-slide-gap product-slider-container">
-                            <div class="swiper-wrapper">
-                                <div class="swiper-slide" th:each="p:*{category.products}">
+                            <div class="swiper-wrapper">                                <div class="swiper-slide" th:each="p:*{category.products}">
                                     <div class="product-item">
-                                        <div class="inner-content">
-                                            <div class="product-thumb">
+                                        <div class="inner-content">                                            <div class="product-thumb">
                                                 <a th:href="@{|/product/detail/${p.id}|}">
                                                     <img class="product-item m-auto d-block"
-                                                        th:src="@{|/assets/images/${p.image}|}">
+                                                        th:src="${p.image}">
                                                 </a>
                                             </div>
                                             <div class="product-desc">

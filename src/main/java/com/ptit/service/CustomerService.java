@@ -7,7 +7,9 @@ import com.ptit.entity.Customers;
 import java.util.List;
 
 public interface CustomerService {
-    Customers findById(String username);
+    Customers findById(Integer id);
+
+    Customers findByUsername(String username);
 
     List<Customers> findAll();
 
@@ -17,7 +19,9 @@ public interface CustomerService {
 
     Customers update(Customers customers);
 
-    void delete(String username);
+    Customers saveCustomer(Customers customer);
+
+    void delete(Integer id);
 
     void loginFromOAuth2(OAuth2AuthenticationToken oauth2);
 
