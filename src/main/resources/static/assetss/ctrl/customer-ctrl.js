@@ -15,7 +15,7 @@ app.controller("customer-ctrl", function ($scope, $http) {
             timer: 2000,
         });
     };   
-    
+
     $scope.initialize = function () {
         //load customer
         $http.get(url).then(resp => {
@@ -37,9 +37,11 @@ app.controller("customer-ctrl", function ($scope, $http) {
     $scope.initialize();    //xoa form
     $scope.reset = function () {
         $scope.form = {
-            photo: null, // Start with no photo to show upload placeholder
+            photo: 'https://res.cloudinary.com/djhidgxfo/image/upload/v1750748027/cloud-upload_c6zitf.jpg', 
         };
-    }    //hien thi len form
+    }    
+    
+    //hien thi len form
     $scope.edit = function (item) {
         $scope.form = angular.copy(item);
         // Ensure photo field exists, set to null if not present
@@ -61,10 +63,11 @@ app.controller("customer-ctrl", function ($scope, $http) {
             sweetalert("Lỗi thêm mới tài khoản!");
             console.log("Error", error);
         });
-    }    //cap nhat sp
+    }    
+    
+    //cap nhat sp
     $scope.update = function (skipReset) {
         var item = angular.copy($scope.form);
-        // Sử dụng ID thay vì username để cập nhật
         $http.patch(`${url}/${item.id}`, item).then(resp => {
             var index = $scope.items.findIndex(p => p.id == item.id);
             $scope.items[index] = resp.data;
@@ -93,7 +96,9 @@ app.controller("customer-ctrl", function ($scope, $http) {
             sweetalert("Lỗi xóa tài khoản!");
             console.log("Error", error);
         });
-    }    //upload hinh
+    }    
+    
+    //upload hinh
     $scope.imageChanged = function (files) {
         if (!files || files.length === 0) {
             sweetalert("Vui lòng chọn file!");
@@ -118,27 +123,22 @@ app.controller("customer-ctrl", function ($scope, $http) {
         data.append('file', file);
 
         // Show loading
-        console.log("Uploading file:", file.name, "Size:", file.size); $http.post(url2, data, {
+        $http.post(url2, data, {
             transformRequest: angular.identity,
             headers: { 'Content-Type': undefined }
         }).then(resp => {
-            console.log("Upload response:", resp.data);
             if (resp.data && resp.data.url) {
                 // Use URL from Cloudinary response, assign to photo field (not image)
                 $scope.form.photo = resp.data.url;
-                console.log("Photo URL set to:", $scope.form.photo);
                 sweetalert("Tải lên hình ảnh thành công!");
                 // Auto-save if this is an existing customer (has ID)
                 if ($scope.form.id) {
-                    console.log("Auto-updating customer with new photo...");
                     $scope.update(true); // Skip reset after auto-update
                 }
             } else {
-                console.error("No URL in response:", resp.data);
                 sweetalert("Lỗi: Không nhận được URL ảnh từ server!");
             }
         }).catch(error => {
-            console.error("Upload error:", error);
             sweetalert("Lỗi tải lên hình ảnh: " + (error.data ? error.data.message : error.statusText));
         })
     }

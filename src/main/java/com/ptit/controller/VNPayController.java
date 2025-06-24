@@ -124,7 +124,7 @@ public class VNPayController {
 
             if ("OK".equals(responseDTO.getStatus())) {
                 // Update order status in database here
-                // Example: orderService.updateOrderStatus(responseDTO.getOrderId(), "PAID");
+                // orderService.updateOrderStatus(responseDTO.getOrderId(), "PAID");
 
                 return ResponseEntity.ok("{\"RspCode\":\"00\",\"Message\":\"Confirm Success\"}");
             } else {

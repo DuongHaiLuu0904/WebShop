@@ -53,7 +53,7 @@ app.controller("product-ctrl", function ($scope, $http) {
     $scope.reset = function () {
         $scope.form = {
             createDate: new Date(),
-            image: 'https://res.cloudinary.com/djhidgxfo/image/upload/v1/images/cloud-upload.jpg',
+            image: 'https://res.cloudinary.com/djhidgxfo/image/upload/v1750748027/cloud-upload_c6zitf.jpg',
             available: true,
         };
     }

@@ -1,19 +1,16 @@
 <div class="row mx-0 bg-white">
-    <div class="col-md-4 text-center">        <span ng-if="!form.photo">
-            <div style="width: 80%; margin-top: 5rem; padding: 2rem; border: 2px dashed #ddd; text-align: center; cursor: pointer;" 
-                 onclick="document.getElementById('image').click()">
-                <i class="fa fa-cloud-upload" style="font-size: 3rem; color: #ccc;"></i>
-                <p style="margin-top: 1rem; color: #666;">Click to upload image</p>
+    <div class="col-md-4 text-center">
+        <div class="card">
+            <div class="card-body">
+                <img ng-src="{{form.photo}}" class="img-fluid img-thumbnail"
+                    style="max-height: 300px; width: 100%; object-fit: cover;" alt="Customer Image" ng-show="form.photo">
+                <div ng-show="!form.photo" class="text-muted">
+                    <i class="fas fa-image fa-3x mb-2"></i>
+                    <img src="https://res.cloudinary.com/djhidgxfo/image/upload/v1750748027/cloud-upload_c6zitf.jpg" class="img-fluid img-thumbnail"
+                        style="max-height: 300px; width: 100%; object-fit: cover;" alt="No Image">
+                </div>
             </div>
-        </span>        <span ng-if="form.photo">
-            <!-- Display image from Cloudinary URL -->
-            <img ng-src="{{form.photo}}" style="width: 80%; margin-top: 5rem; max-height: 300px; object-fit: cover; border-radius: 8px;" 
-                 alt="Customer Image">
-            <!-- Debug info -->
-            <div style="margin-top: 10px; font-size: 12px; color: #666;">
-                <button type="button" onclick="angular.element(this).scope().debugImage()" class="btn btn-sm btn-outline-info">Debug Photo</button>
-            </div>
-        </span>
+        </div>
     </div>
     <div class="col-md-8">
         <form class="form p-3">
