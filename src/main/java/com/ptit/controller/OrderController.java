@@ -8,18 +8,24 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import com.ptit.service.OrderService;
+import com.ptit.service.CategoryService;
+import com.ptit.entity.Category;
+
+import java.util.List;
 
 @Controller
-public class OrderController {
-
-    @Autowired
+public class OrderController {    @Autowired
     OrderService orderService;
 
     @Autowired
-    HttpServletRequest request;
+    CategoryService categoryService;
 
-    @RequestMapping("/cart/view")
-    public String cart() {
+    @Autowired
+    HttpServletRequest request;    @RequestMapping("/cart/view")
+    public String cart(Model model) {
+        // Load categories for menu
+        List<Category> cates = categoryService.findAll();
+        model.addAttribute("cates", cates);
         return "cart/view";
     }
 

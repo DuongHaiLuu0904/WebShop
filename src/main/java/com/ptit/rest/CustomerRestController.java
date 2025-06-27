@@ -29,7 +29,9 @@ public class CustomerRestController {
             return customerService.getAdministrators();
         }
         return customerService.findAll();
-    }    @GetMapping("{id}")
+    }    
+    
+    @GetMapping("{id}")
     public Customers getOne(@PathVariable("id") Integer id) {
         System.out.println("CustomerRestController.getOne() called with id: " + id);
         return customerService.findById(id);
@@ -49,7 +51,9 @@ public class CustomerRestController {
     public Customers update(@PathVariable("id") Integer id, @RequestBody Customers customer) {
         customer.setId(id); // Đảm bảo ID đúng
         return customerService.update(customer);
-    }    @PatchMapping("{id}")
+    }    
+    
+    @PatchMapping("{id}")
     public ResponseEntity<Customers> partialUpdate(@PathVariable("id") Integer id, @RequestBody Customers customer) {
         try {
             System.out.println("Attempting to find customer with id: " + id);

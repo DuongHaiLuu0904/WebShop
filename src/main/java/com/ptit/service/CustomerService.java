@@ -10,6 +10,8 @@ public interface CustomerService {
     Customers findById(Integer id);
 
     Customers findByUsername(String username);
+    
+    Customers findByEmail(String email);
 
     List<Customers> findAll();
 

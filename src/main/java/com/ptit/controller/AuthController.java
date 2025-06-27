@@ -15,27 +15,38 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import com.ptit.entity.Customers;
+import com.ptit.entity.Category;
 import com.ptit.service.CustomerService;
 import com.ptit.service.MailerService;
+import com.ptit.service.CategoryService;
+
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Controller
-public class AuthController {
-
+public class AuthController {    
     @Autowired
     CustomerService customerService;
 
     @Autowired
     MailerService mailer;
 
+    @Autowired
+    CategoryService categoryService;
+
     @CrossOrigin("*")
     @ResponseBody
     @RequestMapping("/rest/auth/authentication")
     public Object getAuthentication(HttpSession session) {
         return session.getAttribute("authentication");
-    }
-
-    @RequestMapping("/auth/login/form")
+    }    @RequestMapping("/auth/login/form")
+    
     public String logInForm(Model model) {
+        // Load categories for menu
+        List<Category> cates = categoryService.findAll();
+        model.addAttribute("cates", cates);
         return "auth/login";
     }
     
@@ -70,8 +81,33 @@ public class AuthController {
 
     // OAuth2
     @RequestMapping("/oauth2/login/success")
-    public String oauth2(OAuth2AuthenticationToken oauth2) {
+    public String oauth2(OAuth2AuthenticationToken oauth2, HttpSession session) {
+        System.out.println("=== OAUTH2 CALLBACK IN CONTROLLER ===");
+        System.out.println("OAuth2 Token: " + oauth2);
+        System.out.println("Session ID: " + session.getId());
+        
         customerService.loginFromOAuth2(oauth2);
+        
+        // Lấy thông tin customer sau khi đã được tạo/cập nhật trong database
+        String email = oauth2.getPrincipal().getAttribute("email");
+        System.out.println("Looking for customer with email: " + email);
+        
+        Customers customer = customerService.findByEmail(email);
+        
+        if (customer != null) {
+            System.out.println("Found customer: " + customer.getUsername() + " - " + customer.getEmail());
+            // Tạo authentication map và lưu vào session như trong AuthenticationInterceptor
+            Map<String, Object> authMap = new HashMap<>();
+            authMap.put("user", customer);
+            byte[] token = (customer.getUsername() + ":" + customer.getPassword()).getBytes();
+            authMap.put("token", "Basic " + Base64.getEncoder().encodeToString(token));
+            session.setAttribute("authentication", authMap);
+            System.out.println("Saved authentication to session");
+        } else {
+            System.out.println("Customer not found after OAuth2 login!");
+        }
+        
+        System.out.println("=== END OAUTH2 CALLBACK ===");
         return "forward:/auth/login/success";
     }
 
@@ -82,8 +118,8 @@ public class AuthController {
     }
 
     @PostMapping("/auth/register")
-    public String signUpSuccess(Model model, @Validated @ModelAttribute("customer") Customers customer, Errors error,
-                                HttpServletResponse response) {
+    public String signUpSuccess(Model model, @Validated @ModelAttribute("customer") Customers customer, 
+                                Errors error, HttpServletResponse response) {
         if (error.hasErrors()) {
             model.addAttribute("message", "Please correct the error below!");
             return "auth/register";

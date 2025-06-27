@@ -25,7 +25,9 @@ public class OrderRestController {
     @GetMapping
     public List<Order> getAll() {
         return orderDAO.findAll();
-    }    @PostMapping
+    }    
+    
+    @PostMapping
     public Order create(@RequestBody JsonNode orderData) {
         return orderService.create(orderData);
     }

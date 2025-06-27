@@ -22,7 +22,9 @@ public class CartRestController {
     CartItemDAO cartItemDAO;
 
     @Autowired
-    ProductDAO productDAO;    // Lấy tất cả items trong giỏ hàng của user
+    ProductDAO productDAO;   
+    
+    // Lấy tất cả items trong giỏ hàng của user
     @GetMapping("/{customerId}")
     public List<CartItem> getCartItems(@PathVariable("customerId") Integer customerId) {
         return cartItemDAO.findByCustomerId(customerId);
@@ -56,7 +58,9 @@ public class CartRestController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
-    }    // Cập nhật số lượng sản phẩm trong giỏ hàng
+    }    
+    
+    // Cập nhật số lượng sản phẩm trong giỏ hàng
     @PutMapping("/{customerId}/update/{productId}")
     public ResponseEntity<CartItem> updateQuantity(@PathVariable("customerId") Integer customerId,
             @PathVariable("productId") Integer productId,

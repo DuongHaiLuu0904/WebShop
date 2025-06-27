@@ -29,7 +29,7 @@ public class Customers implements Serializable {
     String username;
 
     @NotBlank(message = "Không được để trống")
-    @Size(min = 3, max = 12, message = "Mật khẩu phải từ 3 đến 12 ký tự")
+    @Size(min = 3, max = 255, message = "Mật khẩu phải từ 3 đến 255 ký tự")
     String password;
 
     @NotBlank(message = "Không được để trống")

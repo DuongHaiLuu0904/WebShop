@@ -14,7 +14,9 @@ import java.util.Map;
 public class CloudinaryServiceImpl implements CloudinaryService {
 
     @Autowired
-    private Cloudinary cloudinary;    @Override
+    private Cloudinary cloudinary;    
+    
+    @Override
     @SuppressWarnings("unchecked")
     public Map<String, Object> uploadFile(MultipartFile file, String folder) {
         try {
@@ -32,9 +34,7 @@ public class CloudinaryServiceImpl implements CloudinaryService {
 
     @Override
     public String getImageUrl(String publicId) {
-        return cloudinary.url()
-                .secure(true)
-                .generate(publicId);
+        return cloudinary.url().secure(true).generate(publicId);
     }
 
     @Override

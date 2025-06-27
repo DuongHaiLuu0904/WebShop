@@ -41,7 +41,16 @@ public class SecurityConfig {
         return username -> {
             try {
                 Customers user = customerService.findByUsername(username);
-                String password = passwordEncoder.encode(user.getPassword());
+                if (user == null) {
+                    throw new UsernameNotFoundException(username + " not found!");
+                }
+                
+                // Nếu password đã được encode (bắt đầu bằng $2a$ hoặc $2b$), không encode lại
+                String password = user.getPassword();
+                if (!password.startsWith("$2a$") && !password.startsWith("$2b$")) {
+                    password = passwordEncoder.encode(password);
+                }
+                
                 Collection<GrantedAuthority> authorities = user.getAuthorities();
 
                 return User.withUsername(username)
@@ -50,6 +59,8 @@ public class SecurityConfig {
                         .build();
             } catch (NoSuchElementException e) {
                 throw new UsernameNotFoundException(username + " not found!");
+            } catch (Exception e) {
+                throw new UsernameNotFoundException(username + " authentication failed: " + e.getMessage());
             }
         };
     }
@@ -80,7 +91,7 @@ public class SecurityConfig {
                         .failureUrl("/auth/login/error"))
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/auth/login/form")
-                        .defaultSuccessUrl("/auth/login/success", false)
+                        .defaultSuccessUrl("/oauth2/login/success", false)
                         .failureUrl("/auth/login/error")
                         .authorizationEndpoint(authorization -> authorization
                                 .baseUri("/oauth2/authorization")))

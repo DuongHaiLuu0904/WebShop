@@ -26,10 +26,12 @@ public class HomeController {
     ProductService productService;
 
     @Autowired
-    CategoryService categoryService;
-
-    @RequestMapping({"/", "/index"})
+    CategoryService categoryService;    @RequestMapping({"/", "/index"})
     public String home(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam("cid") Optional<String> cid, Model model) {
+        // Load categories for menu
+        List<Category> cates = categoryService.findAll();
+        model.addAttribute("cates", cates);
+        
         if (cid.isPresent()) {
             Page<Product> productPage = productService.findByCategoryId(cid.get(), page, size);
             model.addAttribute("items", productPage.getContent());

@@ -26,7 +26,9 @@ public class OrderServiceImpl implements OrderService {
     OrderDetailDAO ddao;
     
     @Autowired
-    CustomerDAO customerDAO;    @Override
+    CustomerDAO customerDAO;    
+    
+    @Override
     public Order create(JsonNode orderData) {
         ObjectMapper mapper = new ObjectMapper();
         
@@ -74,7 +76,9 @@ public class OrderServiceImpl implements OrderService {
         }
         
         return order;
-    }    @Override
+    }    
+    
+    @Override
     public Order findById(Long id) {
         Order order = dao.findById(id).orElse(null);
         if (order != null && order.getTotalAmount() == null && order.getOrderDetails() != null) {
@@ -86,7 +90,9 @@ public class OrderServiceImpl implements OrderService {
             dao.save(order);
         }
         return order;
-    }@Override
+    }
+    
+    @Override
     public List<Order> findByUsername(String username) {
         if (username == null || username.trim().isEmpty()) {
             return new java.util.ArrayList<>();
@@ -112,7 +118,9 @@ public class OrderServiceImpl implements OrderService {
             dao.save(order);
         }
         return order;
-    }    @Override
+    }    
+    
+    @Override
     public Order updateTotalAmount(Long orderId, Double totalAmount) {
         Order order = dao.findById(orderId).orElse(null);
         if (order != null) {
@@ -130,7 +138,9 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Order findByVnpayTransactionId(String vnpayTransactionId) {
         return dao.findByVnpayTransactionId(vnpayTransactionId);
-    }    @Override
+    }    
+    
+    @Override
     public List<Order> findByUsernameAndPaymentStatus(String username, String paymentStatus) {
         return dao.findByUsernameAndPaymentStatus(username, paymentStatus);
     }

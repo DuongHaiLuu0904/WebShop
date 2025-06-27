@@ -26,13 +26,11 @@ public class Role implements Serializable {
     
 
 	public String getName() {
-		// TODO Auto-generated method stub
 		return name;
 	}
 
 
 	public String getId() {
-		// TODO Auto-generated method stub
 		return id;
 	}
 }

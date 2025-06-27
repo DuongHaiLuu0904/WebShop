@@ -103,21 +103,27 @@ app.controller("product-ctrl", function ($scope, $http) {
             sweetalert("Lỗi xóa sản phẩm!");
             console.log("Error", error);
         });
-    }    //upload hinh
+    }    
+    
+    //upload hinh
     $scope.imageChanged = function (files) {
         var data = new FormData();
         data.append('file', files[0]);
-        $http.post(url2, data, {
+        $http
+        .post(url2, data, {
             transformRequest: angular.identity,
             headers: {'Content-Type': undefined}
-        }).then(resp => {
-            // Use URL from Cloudinary response, fallback to old format
+        })
+        .then(resp => {
             $scope.form.image = resp.data.url;
-        }).catch(error => {
+        })
+        .catch(error => {
             sweetalert("Lỗi tải lên hình ảnh!");
             console.log("Error", error);
         })
-    }    //phan trang
+    }    
+    
+    //phan trang
     $scope.pager = {
         page: 0,
         size: 10,

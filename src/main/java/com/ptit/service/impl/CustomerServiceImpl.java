@@ -25,7 +25,9 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Autowired
     @Lazy
-    BCryptPasswordEncoder pe;    @Override
+    BCryptPasswordEncoder pe;    
+    
+    @Override
     public Customers findById(Integer id) {
         return adao.findById(id).orElse(null);
     }
@@ -33,6 +35,11 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public Customers findByUsername(String username) {
         return adao.findByUsername(username);
+    }
+    
+    @Override
+    public Customers findByEmail(String email) {
+        return adao.findByEmail(email);
     }
 
     @Override
@@ -43,14 +50,18 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public List<Customers> getAdministrators() {
         return adao.getAdministrators();
-    }    @Override
+    }    
+    
+    @Override
     public Customers create(Customers customer) {
         // Đảm bảo token không bao giờ null khi tạo mới
         if (customer.getToken() == null || customer.getToken().trim().isEmpty()) {
             customer.setToken("token");
         }
         return adao.save(customer);
-    }@Override
+    }
+    
+    @Override
     public Customers update(Customers customer) {
         // Lấy thông tin customer hiện tại từ database bằng ID
         Customers existingCustomer = adao.findById(customer.getId()).orElse(null);
@@ -97,11 +108,44 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public void loginFromOAuth2(OAuth2AuthenticationToken oauth2) {
-        // String fullname = oauth2.getPrincipal().getAttribute("name");
+        String fullname = oauth2.getPrincipal().getAttribute("name");
         String email = oauth2.getPrincipal().getAttribute("email");
-        String password = Long.toHexString(System.currentTimeMillis());
+        String picture = oauth2.getPrincipal().getAttribute("picture");
+        
+        // Kiểm tra xem customer đã tồn tại chưa
+        Customers existingCustomer = adao.findByEmail(email);
+        
+        if (existingCustomer == null) {
+            
+            existingCustomer = new Customers();
+            existingCustomer.setUsername(email); 
+            existingCustomer.setEmail(email);
+            existingCustomer.setFullname(fullname != null ? fullname : "");
+            
+            // Tạo password ngắn cho OAuth2 
+            String rawPassword = "oauth2" + (System.currentTimeMillis() % 10000); // Password 10 ký tự
+            existingCustomer.setPassword(rawPassword);
+            
+            existingCustomer.setPhoto(picture != null ? picture : "user.png");
+            existingCustomer.setToken("token");
+            
+            // Lưu customer mới vào database
+            existingCustomer = adao.save(existingCustomer);
+        } 
+        else {
+            if (fullname != null && !fullname.equals(existingCustomer.getFullname())) {
+                existingCustomer.setFullname(fullname);
+            }
+            if (picture != null && !picture.equals(existingCustomer.getPhoto())) {
+                existingCustomer.setPhoto(picture);
+            }
+            adao.save(existingCustomer);
+        }
 
-        UserDetails user = User.withUsername(email).password(pe.encode(password)).roles("CUST").build();
+        UserDetails user = User.withUsername(existingCustomer.getUsername())
+                               .password(existingCustomer.getPassword()) 
+                               .authorities(existingCustomer.getAuthorities()) 
+                               .build();
         Authentication auth = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(auth);
     }

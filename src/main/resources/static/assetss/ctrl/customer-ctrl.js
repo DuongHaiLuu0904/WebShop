@@ -34,7 +34,7 @@ app.controller("customer-ctrl", function ($scope, $http) {
     $scope.Object = window.Object;
 
     //khoi dau
-    $scope.initialize();    //xoa form
+    $scope.initialize();    
     $scope.reset = function () {
         $scope.form = {
             photo: 'https://res.cloudinary.com/djhidgxfo/image/upload/v1750748027/cloud-upload_c6zitf.jpg', 
@@ -44,7 +44,6 @@ app.controller("customer-ctrl", function ($scope, $http) {
     //hien thi len form
     $scope.edit = function (item) {
         $scope.form = angular.copy(item);
-        // Ensure photo field exists, set to null if not present
         if (!$scope.form.photo) {
             $scope.form.photo = null;
         }
@@ -72,13 +71,11 @@ app.controller("customer-ctrl", function ($scope, $http) {
             var index = $scope.items.findIndex(p => p.id == item.id);
             $scope.items[index] = resp.data;
 
-            // Only reset if not called from image upload
             if (!skipReset) {
                 $scope.reset();
             }
 
             sweetalert("Cập nhật tài khoản thành công!");
-            console.log("Customer updated successfully with image:", resp.data.image);
         }).catch(error => {
             sweetalert("Lỗi cập nhật tài khoản!");
             console.log("Error", error);
@@ -113,7 +110,6 @@ app.controller("customer-ctrl", function ($scope, $http) {
             return;
         }
 
-        // Validate file size (max 5MB)
         if (file.size > 5 * 1024 * 1024) {
             sweetalert("File quá lớn! Vui lòng chọn file nhỏ hơn 5MB!");
             return;
@@ -122,23 +118,22 @@ app.controller("customer-ctrl", function ($scope, $http) {
         var data = new FormData();
         data.append('file', file);
 
-        // Show loading
         $http.post(url2, data, {
             transformRequest: angular.identity,
             headers: { 'Content-Type': undefined }
-        }).then(resp => {
+        })
+        .then(resp => {
             if (resp.data && resp.data.url) {
-                // Use URL from Cloudinary response, assign to photo field (not image)
                 $scope.form.photo = resp.data.url;
                 sweetalert("Tải lên hình ảnh thành công!");
-                // Auto-save if this is an existing customer (has ID)
                 if ($scope.form.id) {
-                    $scope.update(true); // Skip reset after auto-update
+                    $scope.update(true); 
                 }
             } else {
                 sweetalert("Lỗi: Không nhận được URL ảnh từ server!");
             }
-        }).catch(error => {
+        })
+        .catch(error => {
             sweetalert("Lỗi tải lên hình ảnh: " + (error.data ? error.data.message : error.statusText));
         })
     }

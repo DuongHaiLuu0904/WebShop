@@ -34,20 +34,28 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
                 String username = auth.getName();
                 Customers user = customerService.findByUsername(username);
                 
-                Map<String, Object> authMap = new HashMap<>();
+                // Nếu không tìm thấy user theo username, thử tìm theo email
+                if (user == null) {
+                    user = customerService.findByEmail(username);
+                }
                 
-                // Tạo user object đơn giản cho JSON serialization
-                Map<String, Object> userInfo = new HashMap<>();
-                userInfo.put("id", user.getId()); // Add customer ID
-                userInfo.put("username", username);
-                userInfo.put("fullname", user.getFullname());
-                userInfo.put("email", user.getEmail());
-                userInfo.put("photo", user.getPhoto());
+                // Nếu vẫn không tìm thấy user, bỏ qua việc tạo authentication
+                if (user != null) {
+                    Map<String, Object> authMap = new HashMap<>();
+                    
+                    // Tạo user object đơn giản cho JSON serialization
+                    Map<String, Object> userInfo = new HashMap<>();
+                    userInfo.put("id", user.getId()); // Add customer ID
+                    userInfo.put("username", username);
+                    userInfo.put("fullname", user.getFullname());
+                    userInfo.put("email", user.getEmail());
+                    userInfo.put("photo", user.getPhoto());
 
-                authMap.put("user", userInfo);
-                byte[] token = (username + ":" + user.getPassword()).getBytes();
-                authMap.put("token", "Basic " + Base64.getEncoder().encodeToString(token));
-                session.setAttribute("authentication", authMap);
+                    authMap.put("user", userInfo);
+                    byte[] token = (username + ":" + user.getPassword()).getBytes();
+                    authMap.put("token", "Basic " + Base64.getEncoder().encodeToString(token));
+                    session.setAttribute("authentication", authMap);
+                }
                 
             } catch (Exception e) {
                 // Log error but don't fail the request

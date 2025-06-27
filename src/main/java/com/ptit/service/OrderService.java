@@ -21,7 +21,8 @@ public interface OrderService {
     Order updatePaymentStatus(Long orderId, String paymentStatus);
     
     Order updateVnpayTransactionId(Long orderId, String vnpayTransactionId);
-      Order updateTotalAmount(Long orderId, Double totalAmount);
+      
+    Order updateTotalAmount(Long orderId, Double totalAmount);
     
     Order calculateAndUpdateTotalAmount(Long orderId);
 }
