@@ -53,11 +53,29 @@ public class OrderServiceImpl implements OrderService {
         if (orderData.has("totalAmount") && !orderData.get("totalAmount").isNull()) {
             order.setTotalAmount(orderData.get("totalAmount").asDouble());
         }
-          // Handle customer mapping
-        if (orderData.has("customer") && orderData.get("customer").has("username")) {
-            String username = orderData.get("customer").get("username").asText();
-            Customers customer = customerDAO.findByUsername(username);
-            order.setCustomer(customer);
+        // Handle customer mapping
+        if (orderData.has("customer")) {
+            JsonNode customerNode = orderData.get("customer");
+            Customers customer = null;
+            
+            // Try to find customer by username first
+            if (customerNode.has("username")) {
+                String username = customerNode.get("username").asText();
+                customer = customerDAO.findByUsername(username);
+            }
+            // If not found by username, try by ID
+            else if (customerNode.has("id")) {
+                Integer customerId = customerNode.get("id").asInt();
+                customer = customerDAO.findById(customerId).orElse(null);
+            }
+            
+            if (customer != null) {
+                order.setCustomer(customer);
+            } else {
+                throw new RuntimeException("Customer not found in database");
+            }
+        } else {
+            throw new RuntimeException("Customer information is required");
         }
           dao.save(order);
 

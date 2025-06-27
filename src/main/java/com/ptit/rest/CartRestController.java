@@ -9,6 +9,8 @@ import com.ptit.entity.CartItemId;
 import com.ptit.entity.Product;
 import com.ptit.dao.CartItemDAO;
 import com.ptit.dao.ProductDAO;
+import com.ptit.dao.CustomerDAO;
+import com.ptit.entity.Customers;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,17 +26,37 @@ public class CartRestController {
     @Autowired
     ProductDAO productDAO;   
     
+    @Autowired
+    CustomerDAO customerDAO;
+    
+    // Helper method to resolve customer ID from string (could be username or ID)
+    private Integer resolveCustomerId(String customerIdOrUsername) {
+        try {
+            // Try to parse as Integer first
+            return Integer.parseInt(customerIdOrUsername);
+        } catch (NumberFormatException e) {
+            // If not a number, treat as username and lookup customer
+            Customers customer = customerDAO.findByUsername(customerIdOrUsername);
+            if (customer != null) {
+                return customer.getId();
+            }
+            throw new RuntimeException("Customer not found: " + customerIdOrUsername);
+        }
+    }
+
     // Lấy tất cả items trong giỏ hàng của user
-    @GetMapping("/{customerId}")
-    public List<CartItem> getCartItems(@PathVariable("customerId") Integer customerId) {
+    @GetMapping("/{customerIdOrUsername}")
+    public List<CartItem> getCartItems(@PathVariable("customerIdOrUsername") String customerIdOrUsername) {
+        Integer customerId = resolveCustomerId(customerIdOrUsername);
         return cartItemDAO.findByCustomerId(customerId);
     }
 
     // Thêm sản phẩm vào giỏ hàng
-    @PostMapping("/{customerId}/add/{productId}")
-    public ResponseEntity<CartItem> addToCart(@PathVariable("customerId") Integer customerId,
+    @PostMapping("/{customerIdOrUsername}/add/{productId}")
+    public ResponseEntity<CartItem> addToCart(@PathVariable("customerIdOrUsername") String customerIdOrUsername,
             @PathVariable("productId") Integer productId) {
         try {
+            Integer customerId = resolveCustomerId(customerIdOrUsername);
             // Kiểm tra sản phẩm có tồn tại không
             Optional<Product> productOpt = productDAO.findById(productId);
             if (!productOpt.isPresent()) {
@@ -61,11 +83,12 @@ public class CartRestController {
     }    
     
     // Cập nhật số lượng sản phẩm trong giỏ hàng
-    @PutMapping("/{customerId}/update/{productId}")
-    public ResponseEntity<CartItem> updateQuantity(@PathVariable("customerId") Integer customerId,
+    @PutMapping("/{customerIdOrUsername}/update/{productId}")
+    public ResponseEntity<CartItem> updateQuantity(@PathVariable("customerIdOrUsername") String customerIdOrUsername,
             @PathVariable("productId") Integer productId,
             @RequestParam("quantity") Integer quantity) {
         try {
+            Integer customerId = resolveCustomerId(customerIdOrUsername);
             CartItem item = cartItemDAO.findByCustomerIdAndProductId(customerId, productId);
             if (item != null) {
                 if (quantity > 0) {
@@ -84,10 +107,11 @@ public class CartRestController {
     }
 
     // Xóa sản phẩm khỏi giỏ hàng
-    @DeleteMapping("/{customerId}/remove/{productId}")
-    public ResponseEntity<Void> removeFromCart(@PathVariable("customerId") Integer customerId,
+    @DeleteMapping("/{customerIdOrUsername}/remove/{productId}")
+    public ResponseEntity<Void> removeFromCart(@PathVariable("customerIdOrUsername") String customerIdOrUsername,
             @PathVariable("productId") Integer productId) {
         try {
+            Integer customerId = resolveCustomerId(customerIdOrUsername);
             cartItemDAO.deleteById(new CartItemId(customerId, productId));
             return ResponseEntity.ok().build();
         } catch (Exception e) {
@@ -96,9 +120,10 @@ public class CartRestController {
     }
 
     // Xóa tất cả sản phẩm trong giỏ hàng
-    @DeleteMapping("/{customerId}/clear")
-    public ResponseEntity<Void> clearCart(@PathVariable("customerId") Integer customerId) {
+    @DeleteMapping("/{customerIdOrUsername}/clear")
+    public ResponseEntity<Void> clearCart(@PathVariable("customerIdOrUsername") String customerIdOrUsername) {
         try {
+            Integer customerId = resolveCustomerId(customerIdOrUsername);
             cartItemDAO.deleteByCustomerId(customerId);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
@@ -107,9 +132,10 @@ public class CartRestController {
     }
 
     // Lấy tổng số lượng sản phẩm trong giỏ hàng
-    @GetMapping("/{customerId}/count")
-    public ResponseEntity<Integer> getCartCount(@PathVariable("customerId") Integer customerId) {
+    @GetMapping("/{customerIdOrUsername}/count")
+    public ResponseEntity<Integer> getCartCount(@PathVariable("customerIdOrUsername") String customerIdOrUsername) {
         try {
+            Integer customerId = resolveCustomerId(customerIdOrUsername);
             Integer count = cartItemDAO.getTotalQuantityByCustomerId(customerId);
             return ResponseEntity.ok(count != null ? count : 0);
         } catch (Exception e) {
@@ -118,9 +144,10 @@ public class CartRestController {
     }
 
     // Lấy tổng tiền trong giỏ hàng
-    @GetMapping("/{customerId}/amount")
-    public ResponseEntity<Double> getCartAmount(@PathVariable("customerId") Integer customerId) {
+    @GetMapping("/{customerIdOrUsername}/amount")
+    public ResponseEntity<Double> getCartAmount(@PathVariable("customerIdOrUsername") String customerIdOrUsername) {
         try {
+            Integer customerId = resolveCustomerId(customerIdOrUsername);
             Double amount = cartItemDAO.getTotalAmountByCustomerId(customerId);
             return ResponseEntity.ok(amount != null ? amount : 0.0);
         } catch (Exception e) {

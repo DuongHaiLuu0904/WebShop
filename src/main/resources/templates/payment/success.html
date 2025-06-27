@@ -60,7 +60,17 @@
                     </div>
                     
                     <div class="mt-4">
-                        <button class="btn btn-success me-2" onclick="createOrderFromPayment()">
+                        <div id="orderCreationStatus" class="alert alert-info" style="display:none;">
+                            <i class="fas fa-spinner fa-spin"></i> Đang tạo đơn hàng...
+                        </div>
+                        <div id="orderCreated" class="alert alert-success" style="display:none;">
+                            <i class="fas fa-check"></i> Đơn hàng đã được tạo thành công!
+                        </div>
+                        <div id="orderError" class="alert alert-danger" style="display:none;">
+                            <i class="fas fa-exclamation-triangle"></i> Có lỗi khi tạo đơn hàng. Vui lòng thử lại!
+                        </div>
+                        
+                        <button id="createOrderBtn" class="btn btn-success me-2" onclick="createOrderFromPayment()" style="display:none;">
                             <i class="fas fa-shopping-bag"></i> Tạo đơn hàng
                         </button>
                         <a href="/" class="btn btn-primary me-2">
@@ -77,30 +87,58 @@
     </div>
     
     <script>
+        let orderCreationInProgress = false;
+        
         // Debug sessionStorage
         function checkSessionStorage() {
             const pendingOrder = sessionStorage.getItem('pendingOrder');
             const info = document.getElementById('sessionStorageInfo');
-            if (pendingOrder) {
-                info.textContent = 'Found: ' + pendingOrder.substring(0, 100) + '...';
-                info.className = 'text-success';
-            } else {
-                info.textContent = 'Not found';
-                info.className = 'text-danger';
+            if (info) {
+                if (pendingOrder) {
+                    info.textContent = 'Found: ' + pendingOrder.substring(0, 100) + '...';
+                    info.className = 'text-success';
+                } else {
+                    info.textContent = 'Not found';
+                    info.className = 'text-danger';
+                }
+            }
+        }
+        
+        function showCreateOrderButton() {
+            const btn = document.getElementById('createOrderBtn');
+            if (btn) {
+                btn.style.display = 'inline-block';
             }
         }
         
         function createOrderFromPayment() {
+            if (orderCreationInProgress) {
+                alert('Đơn hàng đang được tạo, vui lòng đợi...');
+                return;
+            }
+            
             const pendingOrder = sessionStorage.getItem('pendingOrder');
             if (!pendingOrder) {
                 alert('Không tìm thấy thông tin đơn hàng trong sessionStorage!');
+                showCreateOrderButton();
                 return;
             }
+            
+            orderCreationInProgress = true;
+            document.getElementById('orderCreationStatus').style.display = 'block';
+            document.getElementById('orderCreated').style.display = 'none';
+            document.getElementById('orderError').style.display = 'none';
+            document.getElementById('createOrderBtn').style.display = 'none';
             
             try {
                 const orderData = JSON.parse(pendingOrder);
                 orderData.paymentStatus = 'PAID';
-                orderData.vnpayTransactionId = document.querySelector('[th\\:text="${vnpayResponse.transactionId}"]')?.textContent || 'UNKNOWN';
+                
+                // Get transaction ID from the page
+                const transactionElement = document.querySelector('[th\\:text="${vnpayResponse.transactionId}"]');
+                if (transactionElement && transactionElement.textContent !== 'N/A') {
+                    orderData.vnpayTransactionId = transactionElement.textContent;
+                }
                 
                 fetch('/rest/orders/create-from-payment', {
                     method: 'POST',
@@ -109,9 +147,16 @@
                     },
                     body: JSON.stringify(orderData)
                 })
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
                 .then(data => {
-                    alert('Đơn hàng đã được tạo thành công! ID: ' + data.id);
+                    console.log('Order created:', data);
+                    document.getElementById('orderCreationStatus').style.display = 'none';
+                    document.getElementById('orderCreated').style.display = 'block';
                     
                     // Clear cart
                     return fetch('/rest/auth/authentication');
@@ -119,26 +164,48 @@
                 .then(response => response.json())
                 .then(authData => {
                     if (authData && authData.user) {
-                        const username = authData.user.username || authData.user.id;
-                        return fetch(`/rest/cart/${username}/clear`, { method: 'DELETE' });
+                        const userId = authData.user.id;
+                        return fetch(`/rest/cart/${userId}/clear`, { method: 'DELETE' });
                     }
+                    throw new Error('User not authenticated');
                 })
                 .then(() => {
-                    alert('Giỏ hàng đã được xóa!');
+                    console.log('Cart cleared successfully');
                     sessionStorage.removeItem('pendingOrder');
-                    window.location.reload();
+                    orderCreationInProgress = false;
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert('Có lỗi xảy ra: ' + error.message);
+                    document.getElementById('orderCreationStatus').style.display = 'none';
+                    document.getElementById('orderError').style.display = 'block';
+                    showCreateOrderButton();
+                    orderCreationInProgress = false;
                 });
                 
             } catch (e) {
-                alert('Lỗi xử lý dữ liệu: ' + e.message);
+                console.error('Parse error:', e);
+                document.getElementById('orderCreationStatus').style.display = 'none';
+                document.getElementById('orderError').style.display = 'block';
+                showCreateOrderButton();
+                orderCreationInProgress = false;
             }
         }
         
-        document.addEventListener('DOMContentLoaded', checkSessionStorage);
+        // Auto-create order when page loads if sessionStorage has pending order
+        document.addEventListener('DOMContentLoaded', function() {
+            checkSessionStorage();
+            
+            const pendingOrder = sessionStorage.getItem('pendingOrder');
+            if (pendingOrder) {
+                // Auto-create order after 2 seconds to give user time to see the success message
+                setTimeout(() => {
+                    createOrderFromPayment();
+                }, 2000);
+            } else {
+                // Show manual button if no pending order found
+                showCreateOrderButton();
+            }
+        });
     </script>
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>

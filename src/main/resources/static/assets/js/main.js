@@ -281,7 +281,10 @@ app.controller("shopping-ctrl", function ($scope, $http, $rootScope, $timeout) {
 
             // Lưu thông tin đơn hàng vào sessionStorage để sử dụng sau khi thanh toán thành công
             var orderData = {
-                customer: { id: $rootScope.$auth.id },
+                customer: { 
+                    id: $rootScope.$auth.id,
+                    username: $rootScope.$auth.username 
+                },
                 address: this.address,
                 orderDetails: $scope.cart.items.map(item => {
                     return {

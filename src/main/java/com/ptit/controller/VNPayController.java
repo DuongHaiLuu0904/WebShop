@@ -77,18 +77,14 @@ public class VNPayController {
             // Create VNPay request DTO
             VNPayRequestDTO requestDTO = new VNPayRequestDTO();
             requestDTO.setOrderId(orderId);
-            requestDTO.setAmount((long) (amount * 100)); // Convert to VND cents
+            requestDTO.setAmount((long) (amount * 100));
             requestDTO.setOrderInfo(orderInfo);
             requestDTO.setCustomerIp(VNPayUtil.getIpAddress(request));
-
-            // Create payment URL
             String paymentUrl = vnpayService.createPaymentUrl(requestDTO, request);
 
-            // Redirect to VNPay
             return "redirect:" + paymentUrl;
 
         } catch (Exception e) {
-            // Redirect to error page if payment creation fails
             return "redirect:/cart/checkout?error=payment_failed";
         }
     }
@@ -100,18 +96,31 @@ public class VNPayController {
 
         model.addAttribute("vnpayResponse", responseDTO);
 
-        // Redirect to appropriate page based on payment status
         if ("OK".equals(responseDTO.getStatus())) {
-            System.out.println("Payment successful for temp order: " + responseDTO.getOrderId());
-
-            // Tạo đơn hàng thực sự từ thông tin đã lưu
-            // (Thông tin sẽ được xử lý trong success page từ sessionStorage)
-
+            String orderIdStr = responseDTO.getOrderId();
+            if (orderIdStr != null && !orderIdStr.startsWith("TEMP_") && orderIdStr.matches("\\d+")) {
+                try {
+                    Long orderId = Long.parseLong(orderIdStr);
+                    orderService.updatePaymentStatus(orderId, "PAID");
+                    
+                    // Also update VNPay transaction ID if available
+                    String vnpTxnRef = request.getParameter("vnp_TxnRef");
+                    if (vnpTxnRef != null) {
+                        orderService.updateVnpayTransactionId(orderId, vnpTxnRef);
+                    }
+                    
+                    System.out.println("Order " + orderId + " payment status updated to PAID");
+                } catch (NumberFormatException e) {
+                    System.err.println("Invalid order ID format: " + orderIdStr);
+                } catch (Exception e) {
+                    System.err.println("Error updating order status: " + e.getMessage());
+                }
+            } else {
+                System.out.println("Skipping order update for temporary/invalid ID: " + orderIdStr);
+            }
+            
             return "payment/success";
         } else {
-            System.out.println("Payment failed for temp order: " + responseDTO.getOrderId() +
-                    " - Status: " + responseDTO.getStatus() +
-                    " - Message: " + responseDTO.getMessage());
             return "payment/failed";
         }
     }
@@ -123,8 +132,25 @@ public class VNPayController {
             VNPayResponseDTO responseDTO = vnpayService.processReturn(request);
 
             if ("OK".equals(responseDTO.getStatus())) {
-                // Update order status in database here
-                // orderService.updateOrderStatus(responseDTO.getOrderId(), "PAID");
+                String orderIdStr = responseDTO.getOrderId();
+                if (orderIdStr != null && !orderIdStr.startsWith("TEMP_") && orderIdStr.matches("\\d+")) {
+                    try {
+                        Long orderId = Long.parseLong(orderIdStr);
+                        orderService.updatePaymentStatus(orderId, "PAID");
+                        
+                        // Also update VNPay transaction ID if available
+                        String vnpTxnRef = request.getParameter("vnp_TxnRef");
+                        if (vnpTxnRef != null) {
+                            orderService.updateVnpayTransactionId(orderId, vnpTxnRef);
+                        }
+                    } catch (NumberFormatException e) {
+                        System.err.println("Invalid order ID format: " + orderIdStr);
+                    } catch (Exception e) {
+                        System.err.println("Error updating order status: " + e.getMessage());
+                    }
+                } else {
+                    System.out.println("Skipping order update for temporary/invalid ID: " + orderIdStr + " in IPN");
+                }
 
                 return ResponseEntity.ok("{\"RspCode\":\"00\",\"Message\":\"Confirm Success\"}");
             } else {
