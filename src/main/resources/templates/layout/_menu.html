@@ -47,10 +47,8 @@
                                         <div class="search-form">
                                             <form th:action="@{/search}" method="get">
                                                 <div class="form-group">
-                                                    <input class="form-control" type="search"
-                                                        name="keyword" 
-                                                        th:value="${param.keyword}"
-                                                        placeholder="Search our store">
+                                                    <input class="form-control" type="search" name="keyword"
+                                                        th:value="${param.keyword}" placeholder="Search our store">
                                                     <button class="btn-search" type="submit">Search</button>
                                                 </div>
                                             </form>
