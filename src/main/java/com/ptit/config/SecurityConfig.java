@@ -1,4 +1,4 @@
-package com.ptit;
+package com.ptit.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -89,6 +89,11 @@ public class SecurityConfig {
                         .passwordParameter("password")
                         .defaultSuccessUrl("/auth/login/success", false)
                         .failureUrl("/auth/login/error"))
+                .rememberMe(remember -> remember
+                        .key("mySecretKey") // Secret key để mã hóa token
+                        .rememberMeParameter("remember-me") // Tên parameter từ form
+                        .tokenValiditySeconds(86400 * 7) // 7 ngày (86400 = 1 ngày)
+                        .userDetailsService(userDetailsService(getPasswordEncoder())))
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/auth/login/form")
                         .defaultSuccessUrl("/oauth2/login/success", false)

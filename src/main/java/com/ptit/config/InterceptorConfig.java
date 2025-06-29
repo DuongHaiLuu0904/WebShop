@@ -1,4 +1,4 @@
-package com.ptit;
+package com.ptit.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
