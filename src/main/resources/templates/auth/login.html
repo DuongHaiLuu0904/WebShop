@@ -11,10 +11,10 @@
                             <nav class="breadcrumb-area">
                                 <ul class="breadcrumb">
                                     <li>
-                                        <a href="/">Home</a>
+                                        <a href="/">Trang chủ</a>
                                     </li>
                                     <li class="breadcrumb-sep">/</li>
-                                    <li>Account</li>
+                                    <li>Tài khoản</li>
                                 </ul>
                             </nav>
                             <h4 class="title">Login</h4>
@@ -31,8 +31,8 @@
                         <div class="account-form-wrap">
                             <div class="login-form">
                                 <div class="content">
-                                    <h4 class="title">Login your account</h4>
-                                    <p>Please login using account detail bellow.</p>
+                                    <h4 class="title">Đăng nhập</h4>
+                                    <br>
                                 </div>
                                 <form th:action="@{/auth/login}" method="post">
                                     <div class="row">
@@ -43,16 +43,16 @@
                                         </div>
                                         <div class="col-12">
                                             <div class="form-group">
-                                                <label class="form-label">Username</label>
+                                                <label class="form-label">Tên đăng nhập</label>
                                                 <input name="username" class="form-control mb-1" type="text"
-                                                    placeholder="Enter your username" required>
+                                                    placeholder="Nhập tên đăng nhập" required>
                                             </div>
                                         </div>
                                         <div class="col-12">
                                             <div class="form-group">
-                                                <label class="form-label">Password</label>
+                                                <label class="form-label">Mật khẩu</label>
                                                 <input name="password" class="form-control mb-1" type="password"
-                                                    placeholder="Enter your password" required>
+                                                    placeholder="Nhập mật khẩu" required>
                                             </div>
                                         </div>
 
@@ -60,28 +60,26 @@
                                             <div class="form-group">
                                                 <label class="checkbox-inline">
                                                     <input type="checkbox" name="remember-me">
-                                                    <span class="text">Remember me?</span>
+                                                    <span class="text">Ghi nhớ</span>
                                                 </label>
                                             </div>
                                         </div>
 
                                         <div class="col-12">
                                             <div class="login-form-group">
-                                                <button class="btn-sign" type="submit">Sign In</button>
-                                                <a class="btn-pass-forgot" th:href="@{/auth/forgot-password}">Forgot
-                                                    password?</a>
+                                                <button class="btn-sign" type="submit">Đăng nhập</button>
+                                                <a class="btn-pass-forgot" th:href="@{/auth/forgot-password}">Quên mật khẩu?</a>
                                             </div>
                                         </div>
                                         <div class="col-12">
                                             <div class="account-optional-group">
                                                 <div class="text-center">
-                                                    Don't have an account yet?
-                                                    <a class="btn-create fw-bold" th:href="@{/auth/register}">Sign
-                                                        Up</a>
+                                                    Chưa có tài khoản?
+                                                    <a class="btn-create fw-bold" th:href="@{/auth/register}">Đăng ký</a>
                                                 </div>
 
                                                 <div class="text-center my-3">
-                                                    <p class="fw-bold">OR</p>
+                                                    <p class="fw-bold">HOẶC</p>
                                                     <a href="/oauth2/authorization/google"
                                                         class="btn btn-danger rounded-0">
                                                         <i class="fa fa-google"></i> Google
