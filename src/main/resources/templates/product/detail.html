@@ -65,7 +65,12 @@
                                             those who fail in their duty through weakness of will</p>
                                         <div class="product-action-simple">
                                             <div class="product-wishlist">
-                                                <a href="javascript:(0);" class="btn-wishlist">Add to wishlist</a>
+                                                <a href="javascript:void(0);" class="btn-wishlist" 
+                                                   th:attr="ng-click=@{|toggleFavorite(${item.id})|}, ng-class=@{|{'favorited': isFavorite(${item.id})}|}"
+                                                   th:data-product-id="${item.id}">
+                                                    <i th:attr="ng-class=@{|isFavorite(${item.id}) ? 'zmdi zmdi-favorite' : 'zmdi zmdi-favorite-outline'|}"></i>
+                                                    <span th:attr="ng-bind=@{|isFavorite(${item.id}) ? 'Remove from wishlist' : 'Add to wishlist'|}">Add to wishlist</span>
+                                                </a>
                                             </div>
                                             <div class="payment-button">
                                                 <a href="javascript:void(0);"

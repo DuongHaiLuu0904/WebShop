@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/index :: dynamic(~{::main})}">
+
+<body>
+    <main class="main-content">
+        <div class="page-header-area">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <div class="page-header-content">
+                            <nav class="breadcrumb-area">
+                                <ul class="breadcrumb">
+                                    <li>
+                                        <a href="/">Home</a>
+                                    </li>
+                                    <li class="breadcrumb-sep">/</li>
+                                    <li>Favorites</li>
+                                </ul>
+                            </nav>
+                            <h4 class="title">Sản phẩm yêu thích</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <section class="product-area product-wishlist-area">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12" ng-controller="favoriteCtrl">
+                        <!-- Product Grid -->
+                        <div ng-if="favorites.length > 0" class="row">
+                            <div class="col-md-3" ng-repeat="product in favorites">
+                                <div class="product-item">
+                                    <div class="inner-content">
+                                        <div class="product-thumb"> 
+                                            <a ng-href="/product/detail/{{product.id}}">
+                                                <img class="product-item m-auto d-block" ng-src="{{product.image}}"
+                                                    alt="{{product.name}}">
+                                            </a>
+                                            <div class="product-action">
+                                                <div class="addto-wrap">
+                                                    <a class="add-wishlist favorited" href="javascript:void(0);"
+                                                        ng-click="removeFromFavorites(product.id)">
+                                                        <i class="zmdi zmdi-favorite zmdi-hc-fw icon"></i>
+                                                    </a>
+                                                    <a class="add-cart" href="javascript:void(0);"
+                                                        ng-click="addToCart(product.id)"
+                                                        ng-class="{'disabled': !product.available || product.quantity <= 0}">
+                                                        <i class="zmdi zmdi-shopping-cart-plus icon"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="product-desc">
+                                            <div class="product-info">
+                                                <h4 class="title">
+                                                    <a ng-href="/product/detail/{{product.id}}">{{product.name}}</a>
+                                                </h4>
+                                                <div class="prices">
+                                                    <span class="price">${{product.price | number:2}}</span>
+                                                </div>
+                                                <div class="stock-status">
+                                                    <span class="stock-label in-stock" ng-if="product.available && product.quantity > 0">
+                                                        <i class="zmdi zmdi-check"></i> Còn hàng
+                                                    </span>
+                                                    <span class="stock-label out-of-stock" ng-if="!product.available || product.quantity <= 0">
+                                                        <i class="zmdi zmdi-close"></i> Hết hàng
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Empty state -->
+                        <div ng-if="favorites.length === 0" class="text-center py-5">
+                            <div class="mb-4">
+                                <i class="zmdi zmdi-favorite-outline" style="font-size: 80px; color: #ddd;"></i>
+                            </div>
+                            <h3 class="mb-3">Danh sách yêu thích trống</h3>
+                            <p class="text-muted mb-4">Bạn chưa có sản phẩm yêu thích nào. Hãy khám phá và thêm sản phẩm yêu thích của bạn!</p>
+                            <a href="/" class="btn btn-primary me-3">Về trang chủ</a>
+                            <a href="/shop" class="btn btn-outline-primary">Tiếp tục mua sắm</a>
+                        </div>
+                    </div>
+                </div>
+    </main>
+</body>
+
+</html>

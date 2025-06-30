@@ -62,8 +62,11 @@
                                                 </a>
                                                 <div class="product-action">
                                                     <div class="addto-wrap">
-                                                        <a class="add-wishlist" href="javascript:(0);">
-                                                            <i class="zmdi zmdi-favorite-outline zmdi-hc-fw icon"></i>
+                                                        <a class="add-wishlist" href="javascript:void(0);"
+                                                            th:attr="ng-click=@{|toggleFavorite(${p.id})|}, ng-class=@{|{'favorited': isFavorite(${p.id})}|}"
+                                                            th:data-product-id="${p.id}">
+                                                            <i class="zmdi zmdi-hc-fw icon" 
+                                                               th:attr="ng-class=@{|isFavorite(${p.id}) ? 'zmdi-favorite' : 'zmdi-favorite-outline'|}"></i>
                                                         </a>
                                                         <a class="add-cart" href="javascript:void(0);"
                                                             th:attr="ng-click=@{|cart.add(${p.id})|}">

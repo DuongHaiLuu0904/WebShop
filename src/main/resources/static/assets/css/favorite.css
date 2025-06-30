@@ -1,0 +1,113 @@
+/* Favorite Button Styles */
+.add-wishlist {
+    transition: all 0.3s ease;
+    color: #222;
+}
+
+.add-wishlist:hover {
+    color: #f76b6a !important;
+}
+
+.add-wishlist.favorited {
+    color: #f76b6a !important;
+}
+
+.add-wishlist.favorited i {
+    color: #f76b6a !important;
+}
+
+/* Favorite count badge */
+.favorite-count {
+    background: #f76b6a;
+    border-radius: 50%;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 500;
+    height: 20px;
+    left: 15px;
+    line-height: 20px;
+    position: absolute;
+    text-align: center;
+    top: -10px;
+    width: 20px;
+}
+
+/* Wishlist button in product detail */
+.btn-wishlist.favorited {
+    background-color: #f76b6a !important;
+    color: #fff !important;
+    border-color: #f76b6a !important;
+}
+
+.btn-wishlist:hover {
+    background-color: #f76b6a;
+    color: #fff;
+}
+
+/* Product action buttons */
+.product-action .addto-wrap favorite-button {
+    display: block;
+    margin-bottom: 5px;
+}
+
+/* Animation for favorite toggle */
+@keyframes heartBeat {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+.add-wishlist.favorited i {
+    animation: heartBeat 0.3s ease-in-out;
+}
+
+/* Responsive styles */
+@media only screen and (max-width: 575px) {
+    .favorite-count {
+        height: 18px;
+        width: 18px;
+        line-height: 18px;
+        font-size: 10px;
+        left: 12px;
+    }
+}
+
+/* Stock status labels */
+.stock-status {
+    margin-top: 8px;
+}
+
+.stock-label {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.stock-label.in-stock {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.stock-label.out-of-stock {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* Disabled cart button */
+.add-cart.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.add-cart.disabled:hover {
+    color: #222 !important;
+}
+
+/* Favorites page specific styles */
+.product-wishlist-area .product-item {
+    margin-bottom: 30px;
+}

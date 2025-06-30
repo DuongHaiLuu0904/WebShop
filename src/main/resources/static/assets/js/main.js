@@ -1,4 +1,6 @@
 const app = angular.module("shopping-app", []);
+// Make app available globally for other scripts
+window.shoppingApp = app;
 
 app.run(function ($http, $rootScope) {
     $http.get(`/rest/auth/authentication`).then(resp => {
@@ -12,13 +14,13 @@ app.run(function ($http, $rootScope) {
             };
             $http.defaults.headers.common["Authorization"] = $auth.token;
 
-            // Trigger cart load after authentication is set
+            // Trigger cart and favorites load after authentication is set
             $rootScope.$broadcast('authenticationLoaded');
         }
     });
 })
 
-app.controller("shopping-ctrl", function ($scope, $http, $rootScope, $timeout) {
+app.controller("shopping-ctrl", function ($scope, $http, $rootScope, $timeout, favoriteService) {
     var url = "/rest/products";
     var url1 = "/rest/orders";
 
@@ -31,7 +33,31 @@ app.controller("shopping-ctrl", function ($scope, $http, $rootScope, $timeout) {
         });
     }
 
+    // Expose favorite service to scope
+    $scope.favoriteService = favoriteService;
+    
+    // Quick favorite functions for scope
+    $scope.toggleFavorite = function(productId) {
+        return favoriteService.toggleFavorite(productId).then(function(resp) {
+            sweetalert(resp.message);
+            return resp;
+        }).catch(function(error) {
+            Swal.fire({
+                icon: "error",
+                title: error.message || "Có lỗi xảy ra",
+                showConfirmButton: false,
+                timer: 2000,
+            });
+        });
+    };
 
+    $scope.isFavorite = function(productId) {
+        if (!$rootScope.$auth || !$rootScope.$auth.id) return false;
+        if (!favoriteService.favorites) return false;
+        return favoriteService.favorites.some(function(product) {
+            return product.id === productId;
+        });
+    };
 
     // Quan ly gio hang
     $scope.cart = {

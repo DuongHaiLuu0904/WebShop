@@ -58,7 +58,7 @@
                             </ul>
                         </li>
                         <li class="search-item">
-                            <a class="action-item" href="javascript:(0);">
+                            <a class="action-item" href="/favorites">
                                 <i class="zmdi zmdi-favorite-outline icon"></i>
                             </a>
                         </li>
@@ -112,6 +112,9 @@
                                         <li
                                             sec:authorize="isAuthenticated() and hasRole('ROLE_DIRE') or hasRole('ROLE_STAF')">
                                             <a th:href="@{/admin}">Adminstrator</a>
+                                        </li>
+                                        <li sec:authorize="isAuthenticated()">
+                                            <a th:href="@{/favorites}">Favorites</a>
                                         </li>
                                         <li sec:authorize="isAuthenticated()">
                                             <a th:href="@{/order/list}">Your Order</a>
