@@ -118,7 +118,6 @@
             <version>1.39.0</version>
         </dependency>
         
-        <!-- Dotenv Java dependency -->
         <dependency>
             <groupId>io.github.cdimascio</groupId>
             <artifactId>dotenv-java</artifactId>
