@@ -46,17 +46,14 @@ public class FavoriteServiceImpl implements FavoriteService {
     public List<Product> getFavoriteProductsByCustomerId(Integer customerId) {
         try {
             List<Favorite> favorites = favoriteDAO.findByCustomerId(customerId);
-            System.out.println("Found " + favorites.size() + " favorites for customer " + customerId);
             
             List<Product> products = favorites.stream()
                     .map(Favorite::getProduct)
                     .filter(product -> product != null) // Filter out null products
                     .collect(Collectors.toList());
                     
-            System.out.println("Returning " + products.size() + " products");
             return products;
         } catch (Exception e) {
-            System.err.println("Error getting favorite products for customer " + customerId + ": " + e.getMessage());
             e.printStackTrace();
             return List.of(); // Return empty list on error
         }

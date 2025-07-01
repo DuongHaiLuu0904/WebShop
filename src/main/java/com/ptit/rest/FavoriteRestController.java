@@ -26,32 +26,33 @@ public class FavoriteRestController {
     @Autowired
     private CustomerService customerService;
 
+    private ResponseEntity<?> createErrorResponse(String message) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", false);
+        response.put("message", message);
+        return ResponseEntity.ok(response);
+    }
+
+    private Customers getAuthenticatedCustomer() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !auth.isAuthenticated() || auth.getPrincipal().equals("anonymousUser")) {
+            return null;
+        }
+
+        String username = auth.getName();
+        return customerService.findByUsername(username);
+    }
+
     // Thêm sản phẩm vào danh sách yêu thích
     @PostMapping("/add/{productId}")
     public ResponseEntity<?> addToFavorites(@PathVariable Integer productId) {
         try {
-            // Lấy thông tin người dùng hiện tại
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            if (auth == null || !auth.isAuthenticated() || auth.getPrincipal().equals("anonymousUser")) {
-                Map<String, Object> response = new HashMap<>();
-                response.put("success", false);
-                response.put("message", "Bạn cần đăng nhập để sử dụng tính năng này");
-                return ResponseEntity.ok(response);
-            }
-
-            // Lấy username từ principal và tìm customer
-            String username = auth.getName();
-            Customers customer = customerService.findByUsername(username);
+            Customers customer = getAuthenticatedCustomer();
             if (customer == null) {
-                Map<String, Object> response = new HashMap<>();
-                response.put("success", false);
-                response.put("message", "Không tìm thấy thông tin người dùng");
-                return ResponseEntity.ok(response);
+                return createErrorResponse("Bạn cần đăng nhập để sử dụng tính năng này");
             }
-            
-            Integer customerId = customer.getId();
 
-            Favorite favorite = favoriteService.addToFavorites(customerId, productId);
+            Favorite favorite = favoriteService.addToFavorites(customer.getId(), productId);
             
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
@@ -60,10 +61,7 @@ public class FavoriteRestController {
             
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", false);
-            response.put("message", "Có lỗi xảy ra: " + e.getMessage());
-            return ResponseEntity.ok(response);
+            return createErrorResponse("Có lỗi xảy ra: " + e.getMessage());
         }
     }
 
@@ -71,28 +69,12 @@ public class FavoriteRestController {
     @DeleteMapping("/remove/{productId}")
     public ResponseEntity<?> removeFromFavorites(@PathVariable Integer productId) {
         try {
-            // Lấy thông tin người dùng hiện tại
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            if (auth == null || !auth.isAuthenticated() || auth.getPrincipal().equals("anonymousUser")) {
-                Map<String, Object> response = new HashMap<>();
-                response.put("success", false);
-                response.put("message", "Bạn cần đăng nhập để sử dụng tính năng này");
-                return ResponseEntity.ok(response);
-            }
-
-            // Lấy username từ principal và tìm customer
-            String username = auth.getName();
-            Customers customer = customerService.findByUsername(username);
+            Customers customer = getAuthenticatedCustomer();
             if (customer == null) {
-                Map<String, Object> response = new HashMap<>();
-                response.put("success", false);
-                response.put("message", "Không tìm thấy thông tin người dùng");
-                return ResponseEntity.ok(response);
+                return createErrorResponse("Bạn cần đăng nhập để sử dụng tính năng này");
             }
-            
-            Integer customerId = customer.getId();
 
-            favoriteService.removeFromFavorites(customerId, productId);
+            favoriteService.removeFromFavorites(customer.getId(), productId);
             
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
@@ -100,10 +82,7 @@ public class FavoriteRestController {
             
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", false);
-            response.put("message", "Có lỗi xảy ra: " + e.getMessage());
-            return ResponseEntity.ok(response);
+            return createErrorResponse("Có lỗi xảy ra: " + e.getMessage());
         }
     }
 
@@ -111,30 +90,12 @@ public class FavoriteRestController {
     @GetMapping()
     public ResponseEntity<?> getFavorites() {
         try {
-            // Lấy thông tin người dùng hiện tại
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            if (auth == null || !auth.isAuthenticated() || auth.getPrincipal().equals("anonymousUser")) {
-                Map<String, Object> response = new HashMap<>();
-                response.put("success", false);
-                response.put("message", "Bạn cần đăng nhập để sử dụng tính năng này");
-                return ResponseEntity.ok(response);
-            }
-
-            // Lấy username từ principal và tìm customer
-            String username = auth.getName();
-            
-            Customers customer = customerService.findByUsername(username);
+            Customers customer = getAuthenticatedCustomer();
             if (customer == null) {
-                System.out.println("Customer not found for username: " + username);
-                Map<String, Object> response = new HashMap<>();
-                response.put("success", false);
-                response.put("message", "Không tìm thấy thông tin người dùng");
-                return ResponseEntity.ok(response);
+                return createErrorResponse("Bạn cần đăng nhập để sử dụng tính năng này");
             }
-            
-            Integer customerId = customer.getId();
 
-            List<Product> favorites = favoriteService.getFavoriteProductsByCustomerId(customerId);
+            List<Product> favorites = favoriteService.getFavoriteProductsByCustomerId(customer.getId());
             
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
@@ -143,11 +104,8 @@ public class FavoriteRestController {
             
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            e.printStackTrace();
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", false);
-            response.put("message", "Có lỗi xảy ra: " + e.getMessage());
-            return ResponseEntity.ok(response);
+            System.err.println("Error in getFavorites: " + e.getMessage());
+            return createErrorResponse("Có lỗi xảy ra: " + e.getMessage());
         }
     }
     
@@ -183,28 +141,15 @@ public class FavoriteRestController {
     @GetMapping("/check/{productId}")
     public ResponseEntity<?> checkIsFavorite(@PathVariable Integer productId) {
         try {
-            // Lấy thông tin người dùng hiện tại
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            if (auth == null || !auth.isAuthenticated() || auth.getPrincipal().equals("anonymousUser")) {
-                Map<String, Object> response = new HashMap<>();
-                response.put("success", true);
-                response.put("isFavorite", false);
-                return ResponseEntity.ok(response);
-            }
-
-            // Lấy username từ principal và tìm customer
-            String username = auth.getName();
-            Customers customer = customerService.findByUsername(username);
+            Customers customer = getAuthenticatedCustomer();
             if (customer == null) {
                 Map<String, Object> response = new HashMap<>();
                 response.put("success", true);
                 response.put("isFavorite", false);
                 return ResponseEntity.ok(response);
             }
-            
-            Integer customerId = customer.getId();
 
-            boolean isFavorite = favoriteService.isFavorite(customerId, productId);
+            boolean isFavorite = favoriteService.isFavorite(customer.getId(), productId);
             
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
@@ -212,10 +157,7 @@ public class FavoriteRestController {
             
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", false);
-            response.put("message", "Có lỗi xảy ra: " + e.getMessage());
-            return ResponseEntity.ok(response);
+            return createErrorResponse("Có lỗi xảy ra: " + e.getMessage());
         }
     }
 
@@ -223,38 +165,22 @@ public class FavoriteRestController {
     @PostMapping("/toggle/{productId}")
     public ResponseEntity<?> toggleFavorite(@PathVariable Integer productId) {
         try {
-            // Lấy thông tin người dùng hiện tại
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            if (auth == null || !auth.isAuthenticated() || auth.getPrincipal().equals("anonymousUser")) {
-                Map<String, Object> response = new HashMap<>();
-                response.put("success", false);
-                response.put("message", "Bạn cần đăng nhập để sử dụng tính năng này");
-                return ResponseEntity.ok(response);
-            }
-
-            // Lấy username từ principal và tìm customer
-            String username = auth.getName();
-            Customers customer = customerService.findByUsername(username);
+            Customers customer = getAuthenticatedCustomer();
             if (customer == null) {
-                Map<String, Object> response = new HashMap<>();
-                response.put("success", false);
-                response.put("message", "Không tìm thấy thông tin người dùng");
-                return ResponseEntity.ok(response);
+                return createErrorResponse("Bạn cần đăng nhập để sử dụng tính năng này");
             }
-            
-            Integer customerId = customer.getId();
 
-            boolean currentlyFavorite = favoriteService.isFavorite(customerId, productId);
+            boolean currentlyFavorite = favoriteService.isFavorite(customer.getId(), productId);
             
             Map<String, Object> response = new HashMap<>();
             
             if (currentlyFavorite) {
-                favoriteService.removeFromFavorites(customerId, productId);
+                favoriteService.removeFromFavorites(customer.getId(), productId);
                 response.put("success", true);
                 response.put("message", "Đã xóa khỏi danh sách yêu thích");
                 response.put("isFavorite", false);
             } else {
-                favoriteService.addToFavorites(customerId, productId);
+                favoriteService.addToFavorites(customer.getId(), productId);
                 response.put("success", true);
                 response.put("message", "Đã thêm vào danh sách yêu thích");
                 response.put("isFavorite", true);
@@ -262,10 +188,7 @@ public class FavoriteRestController {
             
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", false);
-            response.put("message", "Có lỗi xảy ra: " + e.getMessage());
-            return ResponseEntity.ok(response);
+            return createErrorResponse("Có lỗi xảy ra: " + e.getMessage());
         }
     }
 }
