@@ -1,6 +1,7 @@
 package com.ptit.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -19,6 +20,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 @Data
 @Entity
 @Table(name = "Customers")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "authorities"})
 public class Customers implements Serializable {
 
     @Id

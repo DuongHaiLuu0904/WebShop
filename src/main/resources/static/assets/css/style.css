@@ -1559,9 +1559,9 @@ section .container-fluid {
     font-size: 18px;
 }
 
-2
+
 :hover {
-    color: #f76b6a;
+    color: #393737;
 }
 
 .header-action-area .header-action .mini-cart-dropdown .cart-total-money {

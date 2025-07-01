@@ -20,21 +20,28 @@ app.controller("authority-ctrl", function ($scope, $http, $location) {
         //load roles
         $http.get(url).then(resp => {
             $scope.roles = resp.data;
+        }).catch(error => {
+            console.error("Error loading roles:", error);
         });
 
         $http.get(url2).then(resp => {
             $scope.admins = resp.data;
+        }).catch(error => {
+            console.error("Error loading admins:", error);
         });
 
         $http.get(url3).then(resp => {
             $scope.authorities = resp.data;
+        }).catch(error => {
+            console.error("Error loading authorities:", error);
         });
     }
 
     $scope.authority_of = function (acc, role) {
-        if ($scope.authorities) {
-            return $scope.authorities.find(ur => ur.customer.username == acc.username && ur.role.id == role.id);
+        if ($scope.authorities && acc && role) {
+            return $scope.authorities.find(ur => ur.customer && ur.role && ur.customer.username == acc.username && ur.role.id == role.id);
         }
+        return null;
     }
 
     $scope.authority_changed = function (acc, role) {
