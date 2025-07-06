@@ -7,6 +7,7 @@ public class VNPayRequestDTO {
     private String bankCode;
     private String language;
     private String customerIp;
+    private String customerId;
 
     // Getter and Setter methods
     public String getOrderId() {
@@ -55,5 +56,13 @@ public class VNPayRequestDTO {
 
     public void setCustomerIp(String customerIp) {
         this.customerIp = customerIp;
+    }
+
+    public String getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(String customerId) {
+        this.customerId = customerId;
     }
 }
