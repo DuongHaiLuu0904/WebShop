@@ -408,16 +408,14 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 👨‍💻 Author
 
-- **Student Name** - PTIT University
+- **Student Name** - Dương Hải Lưu
 - **Course** - SOF306 - Java Web Programming
 - **Assignment** - Final Project
 
 ## 📞 Support
 
 For support and questions:
-- **Email**: student@ptit.edu.vn
-- **GitHub Issues**: [Create an issue](https://github.com/your-username/WebShop/issues)
-
+- **Email**: hailuu0904@gmail.com
 ---
 
 **WebShop** - A complete e-commerce solution built with Spring Boot 💻🛒
