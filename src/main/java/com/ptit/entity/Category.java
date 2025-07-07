@@ -26,7 +26,6 @@ public class Category implements Serializable {
     @OneToMany(mappedBy = "category")
     List<Product> products;
 
-    // Getter and Setter methods (in case Lombok doesn't work properly)
     public String getId() {
         return id;
     }

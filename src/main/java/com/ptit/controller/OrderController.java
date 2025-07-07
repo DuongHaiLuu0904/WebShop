@@ -14,14 +14,17 @@ import com.ptit.entity.Category;
 import java.util.List;
 
 @Controller
-public class OrderController {    @Autowired
+public class OrderController {    
+    @Autowired
     OrderService orderService;
 
     @Autowired
     CategoryService categoryService;
 
     @Autowired
-    HttpServletRequest request;    @RequestMapping("/cart/view")
+    HttpServletRequest request;    
+    
+    @RequestMapping("/cart/view")
     public String cart(Model model) {
         // Load categories for menu
         List<Category> cates = categoryService.findAll();

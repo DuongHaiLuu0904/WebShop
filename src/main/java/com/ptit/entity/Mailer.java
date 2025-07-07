@@ -19,7 +19,6 @@ public class Mailer {
         this.body = body;
     }
 
-    // Explicit getter methods (in case Lombok doesn't work properly)
     public String getFrom() {
         return from;
     }

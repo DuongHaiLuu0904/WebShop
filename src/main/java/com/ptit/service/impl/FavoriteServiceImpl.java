@@ -49,13 +49,13 @@ public class FavoriteServiceImpl implements FavoriteService {
             
             List<Product> products = favorites.stream()
                     .map(Favorite::getProduct)
-                    .filter(product -> product != null) // Filter out null products
+                    .filter(product -> product != null) 
                     .collect(Collectors.toList());
                     
             return products;
         } catch (Exception e) {
             e.printStackTrace();
-            return List.of(); // Return empty list on error
+            return List.of(); 
         }
     }
 

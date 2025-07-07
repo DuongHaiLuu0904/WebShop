@@ -53,10 +53,8 @@ public class SecurityConfig {
                 
                 Collection<GrantedAuthority> authorities = user.getAuthorities();
 
-                return User.withUsername(username)
-                        .password(password)
-                        .authorities(authorities)
-                        .build();
+                return User.withUsername(username).password(password).authorities(authorities).build();
+                
             } catch (NoSuchElementException e) {
                 throw new UsernameNotFoundException(username + " not found!");
             } catch (Exception e) {
@@ -82,6 +80,7 @@ public class SecurityConfig {
                         .requestMatchers("/admin/**").hasAnyRole("DIRE", "STAF")
                         .requestMatchers("/rest/authorities", "/rest/customers").hasRole("DIRE")
                         .anyRequest().permitAll())
+                
                 .formLogin(form -> form
                         .loginPage("/auth/login/form")
                         .loginProcessingUrl("/auth/login")
@@ -89,20 +88,24 @@ public class SecurityConfig {
                         .passwordParameter("password")
                         .defaultSuccessUrl("/auth/login/success", false)
                         .failureUrl("/auth/login/error"))
+                
                 .rememberMe(remember -> remember
-                        .key("mySecretKey") // Secret key để mã hóa token
+                        .key("mySecretKey")
                         .rememberMeParameter("remember-me") // Tên parameter từ form
-                        .tokenValiditySeconds(86400 * 7) // 7 ngày (86400 = 1 ngày)
+                        .tokenValiditySeconds(86400 * 7) // 7 ngày 
                         .userDetailsService(userDetailsService(getPasswordEncoder())))
+                
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/auth/login/form")
                         .defaultSuccessUrl("/oauth2/login/success", false)
                         .failureUrl("/auth/login/error")
                         .authorizationEndpoint(authorization -> authorization
-                                .baseUri("/oauth2/authorization")))
+                        .baseUri("/oauth2/authorization")))
+                
                 .logout(logout -> logout
                         .logoutUrl("/auth/logout")
                         .logoutSuccessUrl("/auth/login/form"))
+                
                 .exceptionHandling(ex -> ex
                         .accessDeniedPage("/auth/unauthoried"));
 

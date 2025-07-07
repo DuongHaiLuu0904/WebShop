@@ -16,26 +16,17 @@ public class DotenvConfig implements ApplicationContextInitializer<ConfigurableA
         ConfigurableEnvironment environment = applicationContext.getEnvironment();
         
         try {
-            // Load .env file from project root
-            Dotenv dotenv = Dotenv.configure()
-                    .directory("./")
-                    .ignoreIfMalformed()
-                    .ignoreIfMissing()
-                    .load();
+            Dotenv dotenv = Dotenv.configure().directory("./").ignoreIfMalformed().ignoreIfMissing().load();
 
             // Convert dotenv entries to a map
             Map<String, Object> envMap = new HashMap<>();
             dotenv.entries().forEach(entry -> {
                 envMap.put(entry.getKey(), entry.getValue());
-                System.out.println("Loaded env variable: " + entry.getKey() + " = " + 
-                    (entry.getKey().contains("PASSWORD") || entry.getKey().contains("SECRET") ? "***" : entry.getValue()));
             });
 
             // Add to Spring Environment
             environment.getPropertySources().addFirst(new MapPropertySource("dotenv", envMap));
             
-            System.out.println("Environment variables loaded successfully from .env file");
-
         } catch (Exception e) {
             System.err.println("Warning: Could not load .env file - " + e.getMessage());
         }

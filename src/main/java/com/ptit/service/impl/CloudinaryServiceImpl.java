@@ -20,11 +20,7 @@ public class CloudinaryServiceImpl implements CloudinaryService {
     @SuppressWarnings("unchecked")
     public Map<String, Object> uploadFile(MultipartFile file, String folder) {
         try {
-            // Upload file to Cloudinary with folder organization
-            Map<String, Object> uploadParams = ObjectUtils.asMap(
-                    "folder", folder,
-                    "resource_type", "image"
-            );
+            Map<String, Object> uploadParams = ObjectUtils.asMap("folder", folder, "resource_type", "image");
             
             return cloudinary.uploader().upload(file.getBytes(), uploadParams);
         } catch (IOException e) {

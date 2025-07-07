@@ -1,19 +1,17 @@
 app.controller("dashboard-ctrl", function ($scope, $http) {
-    console.log("Dashboard controller loaded");
-    
-    // Initialize data
+   
+    // Khởi tạo dữ liệu
     $scope.productCount = "Loading...";
     $scope.categoryCount = "Loading...";
     $scope.customerCount = "Loading...";
     $scope.revenue = "Loading...";
     $scope.latestCustomer = null;
 
-    // Fetch product count and calculate revenue
+    // Lấy số lượng sản phẩm và tính toán doanh thu
     $http.get("/rest/products").then(resp => {
-        console.log("Products loaded:", resp.data.length);
         $scope.productCount = resp.data.length;
         
-        // Calculate total revenue (price * quantity for all products)
+        // Tính tổng doanh thu (giá * số lượng cho tất cả sản phẩm)
         var totalRevenue = 0;
         resp.data.forEach(product => {
             if (product.price && product.quantity) {
@@ -22,24 +20,24 @@ app.controller("dashboard-ctrl", function ($scope, $http) {
         });
         $scope.revenue = "$" + totalRevenue.toLocaleString('en-US', {minimumFractionDigits: 2});
     }).catch(error => {
-        $scope.productCount = "Error";
-        $scope.revenue = "Error";
+        $scope.productCount = error;
+        $scope.revenue = error;
     });
 
-    // Fetch category count
+    // Lấy số lượng danh mục
     $http.get("/rest/categories").then(resp => {
         $scope.categoryCount = resp.data.length;
     }).catch(error => {
-        $scope.categoryCount = "Error";
+        $scope.categoryCount = error;
     });
 
-    // Fetch customer count and latest customer
+    // Lấy số lượng khách hàng và khách hàng mới nhất
     $http.get("/rest/customers").then(resp => {
         $scope.customerCount = resp.data.length;
         if (resp.data.length > 0) {
             $scope.latestCustomer = resp.data[resp.data.length - 1];
         }
     }).catch(error => {
-        $scope.customerCount = "Error";
+        $scope.customerCount = error;
     });
 });

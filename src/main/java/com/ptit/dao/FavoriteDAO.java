@@ -18,15 +18,13 @@ public interface FavoriteDAO extends JpaRepository<Favorite, FavoriteId> {
     
     // Kiểm tra xem sản phẩm đã được yêu thích bởi khách hàng chưa
     @Query("SELECT f FROM Favorite f WHERE f.customerId = :customerId AND f.productId = :productId")
-    Favorite findByCustomerIdAndProductId(@Param("customerId") Integer customerId, 
-                                         @Param("productId") Integer productId);
+    Favorite findByCustomerIdAndProductId(@Param("customerId") Integer customerId, @Param("productId") Integer productId);
     
     // Xóa sản phẩm khỏi danh sách yêu thích
     @Modifying
     @Transactional
     @Query("DELETE FROM Favorite f WHERE f.customerId = :customerId AND f.productId = :productId")
-    void deleteByCustomerIdAndProductId(@Param("customerId") Integer customerId, 
-                                       @Param("productId") Integer productId);
+    void deleteByCustomerIdAndProductId(@Param("customerId") Integer customerId, @Param("productId") Integer productId);
     
     // Đếm số sản phẩm yêu thích của khách hàng
     @Query("SELECT COUNT(f) FROM Favorite f WHERE f.customerId = :customerId")

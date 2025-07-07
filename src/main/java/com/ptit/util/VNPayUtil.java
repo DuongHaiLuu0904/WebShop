@@ -54,9 +54,6 @@ public class VNPayUtil {
         return sb.toString();
     }
 
-    /**
-     * Tạo hash data cho việc tạo URL thanh toán (với URL encoding US_ASCII)
-     */
     public static String buildHashData(Map<String, String> fields) {
         List<String> fieldNames = new ArrayList<>(fields.keySet());
         Collections.sort(fieldNames);
@@ -75,8 +72,7 @@ public class VNPayUtil {
                 hashData.append('&');
             }
         }
-        
-        // Remove the last '&'
+
         if (hashData.length() > 0) {
             hashData.setLength(hashData.length() - 1);
         }

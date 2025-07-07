@@ -87,7 +87,7 @@ app.service("favoriteService", function($http, $rootScope) {
         return $http({
             method: 'DELETE',
             url: "/rest/favorites/remove/" + productId,
-            timeout: 10000, // 10 second timeout
+            timeout: 10000, 
             cache: false
         }).then(resp => {
             if (resp.data.success) {

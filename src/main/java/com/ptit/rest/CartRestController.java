@@ -29,13 +29,10 @@ public class CartRestController {
     @Autowired
     CustomerDAO customerDAO;
     
-    // Helper method to resolve customer ID from string (could be username or ID)
     private Integer resolveCustomerId(String customerIdOrUsername) {
         try {
-            // Try to parse as Integer first
             return Integer.parseInt(customerIdOrUsername);
         } catch (NumberFormatException e) {
-            // If not a number, treat as username and lookup customer
             Customers customer = customerDAO.findByUsername(customerIdOrUsername);
             if (customer != null) {
                 return customer.getId();
@@ -84,7 +81,8 @@ public class CartRestController {
     
     // Cập nhật số lượng sản phẩm trong giỏ hàng
     @PutMapping("/{customerIdOrUsername}/update/{productId}")
-    public ResponseEntity<CartItem> updateQuantity(@PathVariable("customerIdOrUsername") String customerIdOrUsername,
+    public ResponseEntity<CartItem> updateQuantity(@PathVariable("customerIdOrUsername") 
+            String customerIdOrUsername,
             @PathVariable("productId") Integer productId,
             @RequestParam("quantity") Integer quantity) {
         try {

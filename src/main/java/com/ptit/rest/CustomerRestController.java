@@ -33,7 +33,6 @@ public class CustomerRestController {
     
     @GetMapping("{id}")
     public Customers getOne(@PathVariable("id") Integer id) {
-        System.out.println("CustomerRestController.getOne() called with id: " + id);
         return customerService.findById(id);
     }
 
@@ -49,24 +48,18 @@ public class CustomerRestController {
 
     @PutMapping("{id}")
     public Customers update(@PathVariable("id") Integer id, @RequestBody Customers customer) {
-        customer.setId(id); // Đảm bảo ID đúng
+        customer.setId(id);
         return customerService.update(customer);
     }    
     
     @PatchMapping("{id}")
     public ResponseEntity<Customers> partialUpdate(@PathVariable("id") Integer id, @RequestBody Customers customer) {
         try {
-            System.out.println("Attempting to find customer with id: " + id);
-            
-            // Lấy customer hiện tại từ database
             Customers existingCustomer = customerService.findById(id);
             if (existingCustomer == null) {
-                System.err.println("Customer not found with id: " + id);
                 return ResponseEntity.notFound().build();
             }
-            
-            System.out.println("Found customer: " + existingCustomer.getUsername());
-            
+
             // Update các trường được gửi lên
             if (customer.getUsername() != null && !customer.getUsername().trim().isEmpty()) {
                 existingCustomer.setUsername(customer.getUsername());
@@ -83,8 +76,10 @@ public class CustomerRestController {
             if (customer.getPhoto() != null && !customer.getPhoto().trim().isEmpty()) {
                 existingCustomer.setPhoto(customer.getPhoto());
             }
+            if (customer.getPublic_id() != null && !customer.getPublic_id().trim().isEmpty()) {
+                existingCustomer.setPublic_id(customer.getPublic_id());
+            }
             
-            // Đảm bảo token không bao giờ null
             if (existingCustomer.getToken() == null) {
                 existingCustomer.setToken("token");
             }
@@ -93,7 +88,6 @@ public class CustomerRestController {
             Customers updatedCustomer = customerService.saveCustomer(existingCustomer);
             return ResponseEntity.ok(updatedCustomer);
         } catch (Exception e) {
-            System.err.println("Error updating customer: " + e.getMessage());
             e.printStackTrace();
             return ResponseEntity.status(500).build();
         }

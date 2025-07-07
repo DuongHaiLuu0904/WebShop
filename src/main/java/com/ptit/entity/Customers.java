@@ -42,6 +42,7 @@ public class Customers implements Serializable {
     String email;
 
     String photo;
+    String public_id;
     String token;
 
     @JsonIgnore
@@ -70,7 +71,17 @@ public class Customers implements Serializable {
 
     public void setPhoto(String photo) {
         this.photo = photo;
-    }    public void setToken(String token) {
+    }
+    
+    public String getPublic_id() {
+        return public_id;
+    }
+
+    public void setPublic_id(String public_id) {
+        this.public_id = public_id;
+    }
+    
+    public void setToken(String token) {
         this.token = token;
     }
 
@@ -97,7 +108,6 @@ public class Customers implements Serializable {
                 .collect(Collectors.toList());
     }
 
-    // Getter and Setter methods (in case Lombok doesn't work properly)
     public Integer getId() {
         return id;
     }

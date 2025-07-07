@@ -28,6 +28,6 @@ public enum PaymentStatus {
                 return status;
             }
         }
-        return PENDING; // Default value
+        return PENDING; 
     }
 }

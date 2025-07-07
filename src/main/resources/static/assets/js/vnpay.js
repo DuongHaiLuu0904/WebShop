@@ -1,12 +1,11 @@
 // VNPay Integration JavaScript
 
 function initiateVNPayPayment(orderData) {
-    // Prepare payment request
     const paymentRequest = {
         orderId: orderData.orderId || generateOrderId(),
         amount: orderData.amount,
         orderInfo: orderData.orderInfo || `Thanh toán đơn hàng ${orderData.orderId}`,
-        bankCode: orderData.bankCode || '', // Optional: specific bank
+        bankCode: orderData.bankCode || '', 
         language: 'vn'
     };
 
@@ -34,13 +33,10 @@ function initiateVNPayPayment(orderData) {
         showPaymentLoading(false);
         
         if (data.status === 'OK' && data.paymentUrl) {
-            console.log('Redirecting to VNPay:', data.paymentUrl);
-            // Redirect to VNPay
             window.location.href = data.paymentUrl;
         } else {
-            console.error('VNPay error response:', data);
             showPaymentError(data.message || 'Có lỗi xảy ra khi tạo liên kết thanh toán');
-            // Reset processing state in parent page
+
             if (window.setProcessingState) {
                 window.setProcessingState(false);
             }

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -29,27 +30,9 @@ public class UploadRestController {
     @Autowired
     UploadService uploadService;
 
-    // Test endpoint
-    @PostMapping("/rest/upload/test")
-    public ResponseEntity<?> testUpload() {
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            ObjectNode node = mapper.createObjectNode();
-            node.put("message", "Upload service is working");
-            node.put("timestamp", System.currentTimeMillis());
-            return ResponseEntity.ok(node);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error: " + e.getMessage());
-        }
-    }
-
     @PostMapping("/rest/upload/{folder}")
     public JsonNode upload(@RequestParam("file") MultipartFile file, @PathVariable("folder") String folder) {
         try {
-            System.out.println("Uploading file: " + file.getOriginalFilename() + " to folder: " + folder);
-            
-            // Validate file
             if (file.isEmpty()) {
                 throw new RuntimeException("File is empty");
             }
@@ -58,25 +41,19 @@ public class UploadRestController {
                 throw new RuntimeException("File must be an image");
             }
             
-            // Upload to Cloudinary
             Map<String, Object> result = cloudinaryService.uploadFile(file, folder);
             
             ObjectMapper mapper = new ObjectMapper();
             ObjectNode node = mapper.createObjectNode();
             
-            // Return Cloudinary URL and public_id
             node.put("url", result.get("secure_url").toString());
             node.put("publicId", result.get("public_id").toString());
             node.put("name", result.get("original_filename").toString());
             node.put("size", file.getSize());
             
-            System.out.println("Upload successful. URL: " + result.get("secure_url").toString());
-            
             return node;
         } catch (Exception e) {
-            System.err.println("Cloudinary upload failed: " + e.getMessage());
             e.printStackTrace();
-              // Fallback to local storage if Cloudinary fails
             try {
                 File savedFile = uploadService.save(file, folder);
                 
@@ -87,11 +64,8 @@ public class UploadRestController {
                 node.put("url", "/assets/" + folder + "/" + savedFile.getName());
                 node.put("error", "Cloudinary failed, using local storage");
                 
-                System.out.println("Fallback to local storage. URL: " + "/assets/" + folder + "/" + savedFile.getName());
-                
                 return node;
             } catch (Exception fallbackError) {
-                System.err.println("Local storage fallback also failed: " + fallbackError.getMessage());
                 fallbackError.printStackTrace();
                 
                 ObjectMapper mapper = new ObjectMapper();
@@ -101,6 +75,76 @@ public class UploadRestController {
                 
                 return errorNode;
             }
+        }
+    }
+
+    @PostMapping("/rest/upload/delete")
+    public ResponseEntity<?> deleteImageByPost(@RequestParam("publicId") String publicId) {
+        try {
+            if (publicId == null || publicId.trim().isEmpty()) {
+                return ResponseEntity.badRequest().body("Public ID is required");
+            }
+            
+            if (publicId.equals("user_dlgoyb") || publicId.equals("cloud-upload_c6zitf") || 
+                publicId.toLowerCase().contains("default")) {
+                System.out.println("SKIPPED: Not deleting default image: " + publicId);
+                ObjectMapper mapper = new ObjectMapper();
+                ObjectNode node = mapper.createObjectNode();
+                node.put("message", "Default image not deleted");
+                node.put("publicId", publicId);
+                node.put("skipped", true);
+                return ResponseEntity.ok(node);
+            }
+            
+            cloudinaryService.deleteFile(publicId);
+
+            ObjectMapper mapper = new ObjectMapper();
+            ObjectNode node = mapper.createObjectNode();
+            node.put("message", "Image deleted successfully");
+            node.put("publicId", publicId);
+            node.put("deleted", true);
+            
+            return ResponseEntity.ok(node);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to delete image: " + e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/rest/upload/delete/{publicId:.+}")
+    public ResponseEntity<?> deleteImage(@PathVariable("publicId") String publicId) {
+        try {
+            try {
+                publicId = java.net.URLDecoder.decode(publicId, "UTF-8");
+            } catch (Exception decodeError) {
+                System.out.println("No URL decoding needed, using original: " + publicId);
+            }
+            
+            if (publicId == null || publicId.trim().isEmpty()) {
+                return ResponseEntity.badRequest().body("Public ID is required");
+            }
+            
+            if (publicId.equals("user_dlgoyb") || publicId.equals("cloud-upload_c6zitf") || publicId.toLowerCase().contains("default")) {
+                ObjectMapper mapper = new ObjectMapper();
+                ObjectNode node = mapper.createObjectNode();
+                node.put("message", "Default image not deleted");
+                node.put("publicId", publicId);
+                node.put("skipped", true);
+                return ResponseEntity.ok(node);
+            }
+            
+            cloudinaryService.deleteFile(publicId);
+            
+            ObjectMapper mapper = new ObjectMapper();
+            ObjectNode node = mapper.createObjectNode();
+            node.put("message", "Image deleted successfully");
+            node.put("publicId", publicId);
+            node.put("deleted", true);
+            
+            return ResponseEntity.ok(node);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to delete image: " + e.getMessage());
         }
     }
 }

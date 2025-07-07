@@ -25,8 +25,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         HttpSession session = request.getSession();
-        
-        // Only set authentication data if user is authenticated and session doesn't have it
+       
         if (auth != null && auth.isAuthenticated() && !"anonymousUser".equals(auth.getPrincipal()) 
             && session.getAttribute("authentication") == null) {
             
@@ -43,9 +42,8 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
                 if (user != null) {
                     Map<String, Object> authMap = new HashMap<>();
                     
-                    // Tạo user object đơn giản cho JSON serialization
                     Map<String, Object> userInfo = new HashMap<>();
-                    userInfo.put("id", user.getId()); // Add customer ID
+                    userInfo.put("id", user.getId()); 
                     userInfo.put("username", username);
                     userInfo.put("fullname", user.getFullname());
                     userInfo.put("email", user.getEmail());
@@ -58,7 +56,6 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
                 }
                 
             } catch (Exception e) {
-                // Log error but don't fail the request
                 e.printStackTrace();
             }
         }

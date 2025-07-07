@@ -54,7 +54,6 @@ public class CustomerServiceImpl implements CustomerService {
     
     @Override
     public Customers create(Customers customer) {
-        // Đảm bảo token không bao giờ null khi tạo mới
         if (customer.getToken() == null || customer.getToken().trim().isEmpty()) {
             customer.setToken("token");
         }
@@ -63,7 +62,6 @@ public class CustomerServiceImpl implements CustomerService {
     
     @Override
     public Customers update(Customers customer) {
-        // Lấy thông tin customer hiện tại từ database bằng ID
         Customers existingCustomer = adao.findById(customer.getId()).orElse(null);
         if (existingCustomer != null) {
             // Cập nhật các trường từ customer mới vào existingCustomer
@@ -82,7 +80,6 @@ public class CustomerServiceImpl implements CustomerService {
                 existingCustomer.setToken(customer.getToken());
             }
             
-            // Đảm bảo token không bao giờ null
             if (existingCustomer.getToken() == null) {
                 existingCustomer.setToken("token");
             }
@@ -123,7 +120,7 @@ public class CustomerServiceImpl implements CustomerService {
             existingCustomer.setFullname(fullname != null ? fullname : "");
             
             // Tạo password ngắn cho OAuth2 
-            String rawPassword = "oauth2" + (System.currentTimeMillis() % 10000); // Password 10 ký tự
+            String rawPassword = "oauth2" + (System.currentTimeMillis() % 10000); 
             existingCustomer.setPassword(rawPassword);
             
             existingCustomer.setPhoto(picture != null ? picture : "user.png");

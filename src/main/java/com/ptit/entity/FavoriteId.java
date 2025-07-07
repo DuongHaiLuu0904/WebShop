@@ -8,16 +8,13 @@ public class FavoriteId implements Serializable {
     private Integer customerId;
     private Integer productId;
 
-    // Default constructor
     public FavoriteId() {}
 
-    // Parameterized constructor
     public FavoriteId(Integer customerId, Integer productId) {
         this.customerId = customerId;
         this.productId = productId;
     }
 
-    // Getters and Setters
     public Integer getCustomerId() {
         return customerId;
     }
@@ -34,7 +31,6 @@ public class FavoriteId implements Serializable {
         this.productId = productId;
     }
 
-    // equals and hashCode methods (required for composite keys)
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

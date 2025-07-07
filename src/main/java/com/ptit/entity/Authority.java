@@ -23,7 +23,6 @@ public class Authority implements Serializable {
     @JoinColumn(name = "roleId")
     private Role role;
 
-    // Thêm phương thức getRole để trả về đối tượng Role
     public Role getRole() {
         return role;
     }

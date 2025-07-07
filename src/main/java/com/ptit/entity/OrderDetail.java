@@ -21,7 +21,6 @@ public class OrderDetail implements Serializable {
     @JoinColumn(name = "Orderid")
     Order order;
 
-    // Getter and Setter methods
     public Long getId() {
         return id;
     }

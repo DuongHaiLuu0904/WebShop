@@ -33,7 +33,6 @@ public class Favorite implements Serializable {
     @JoinColumn(name = "productId", insertable = false, updatable = false)
     private Product product;
 
-    // Constructors
     public Favorite() {}
 
     public Favorite(Integer customerId, Integer productId) {
@@ -42,7 +41,6 @@ public class Favorite implements Serializable {
         this.addedDate = new Date();
     }
 
-    // Getters and Setters
     public Integer getCustomerId() {
         return customerId;
     }

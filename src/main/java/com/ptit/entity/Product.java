@@ -19,6 +19,7 @@ public class Product implements Serializable {
     Integer id;
     String name;
     String image;
+    String public_id;
     Double price;
     Integer quantity;
     @Temporal(TemporalType.DATE)
@@ -34,7 +35,6 @@ public class Product implements Serializable {
     @OneToMany(mappedBy = "product")
     List<OrderDetail> orderDetails;
     
-    // Getter and Setter methods (in case Lombok doesn't work properly)
     public Integer getId() {
         return id;
     }
@@ -57,6 +57,14 @@ public class Product implements Serializable {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public String getPublic_id() {
+        return public_id;
+    }
+
+    public void setPublic_id(String public_id) {
+        this.public_id = public_id;
     }
 
     public Double getPrice() {

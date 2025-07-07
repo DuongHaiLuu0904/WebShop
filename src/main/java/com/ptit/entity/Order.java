@@ -36,7 +36,6 @@ public class Order implements Serializable {
     @OneToMany(mappedBy = "order")
     List<OrderDetail> orderDetails;
 
-    // Getter and Setter methods
     public Long getId() {
         return id;
     }

@@ -117,7 +117,6 @@ public class CartItem implements Serializable {
         this.product = product;
     }
 
-    // Helper method to calculate total amount for this item
     public Double getAmount() {
         return price * quantity;
     }
