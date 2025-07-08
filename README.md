@@ -94,7 +94,7 @@ WebShop/
 
 ### 1. Clone repository
 ```bash
-git clone https://github.com/your-username/WebShop.git
+git clone https://github.com/DuongHaiLuu0904/WebShop.git
 cd WebShop
 ```
 
