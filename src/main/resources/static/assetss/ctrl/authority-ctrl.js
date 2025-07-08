@@ -2,7 +2,7 @@ app.controller("authority-ctrl", function ($scope, $http, $location) {
     var url = "/rest/roles";
     var url1 = "/rest/authorities";
     var url2 = "/rest/customers?admin=false";
-    var url3 = "/rest/authorities?admin=false";
+    var url3 = "/rest/authorities";
     $scope.roles = [];
     $scope.admins = [];
     $scope.authorities = [];
@@ -39,18 +39,22 @@ app.controller("authority-ctrl", function ($scope, $http, $location) {
 
     $scope.authority_of = function (acc, role) {
         if ($scope.authorities && acc && role) {
-            return $scope.authorities.find(ur => ur.customer && ur.role && ur.customer.username == acc.username && ur.role.id == role.id);
+            var found = $scope.authorities.find(ur => ur.customer && ur.role && ur.customer.username == acc.username && ur.role.id == role.id);
+            return found != null;
         }
-        return null;
+        return false;
     }
 
     $scope.authority_changed = function (acc, role) {
-        var authority = $scope.authority_of(acc, role);
+        var authority = $scope.authorities.find(ur => ur.customer && ur.role && ur.customer.username == acc.username && ur.role.id == role.id);
         if (authority) {
-            $scope.revoke_authority(authority); //da cap quyen => thu hoi quyen(xoa)
+            $scope.revoke_authority(authority);
         } else {
-            authority = {customer: acc, role: role};
-            $scope.grant_authority(authority); //chua duoc cap quyen => cap quyen(them moi)
+            authority = {
+                customer: acc,
+                role: role
+            };
+            $scope.grant_authority(authority);
         }
     }
 
@@ -61,7 +65,6 @@ app.controller("authority-ctrl", function ($scope, $http, $location) {
             sweetalert("Cấp quyền sử dụng thành công!");
         }).catch(error => {
             sweetalert("Cấp quyền sử dụng thất bại!");
-            console.log("Error: ", error);
         });
     }
 
@@ -73,7 +76,6 @@ app.controller("authority-ctrl", function ($scope, $http, $location) {
             sweetalert("Thu hồi quyền sử dụng thành công!");
         }).catch(error => {
             sweetalert("Thu hồi quyền sử dụng thất bại!");
-            console.log("Error: ", error);
         });
     }
 

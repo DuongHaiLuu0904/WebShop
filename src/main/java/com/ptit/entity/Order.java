@@ -19,7 +19,9 @@ public class Order implements Serializable {
 
     @Temporal(TemporalType.DATE)
     @Column(name = "Createdate")
-    Date createDate = new Date();    @ManyToOne
+    Date createDate = new Date();    
+    
+    @ManyToOne
     @JoinColumn(name = "customerId")
     Customers customer;
 

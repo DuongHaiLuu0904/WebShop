@@ -98,7 +98,8 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
         </dependency>
-          <!-- JSR-305 annotations to resolve javax.annotation.meta.When warnings -->
+        
+        <!-- JSR-305 annotations to resolve javax.annotation.meta.When warnings -->
         <dependency>
             <groupId>com.google.code.findbugs</groupId>
             <artifactId>jsr305</artifactId>
@@ -109,13 +110,8 @@
         <!-- Cloudinary dependency -->
         <dependency>
             <groupId>com.cloudinary</groupId>
-            <artifactId>cloudinary-core</artifactId>
-            <version>1.39.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.cloudinary</groupId>
-            <artifactId>cloudinary-http44</artifactId>
-            <version>1.39.0</version>
+            <artifactId>cloudinary-http5</artifactId>
+            <version>2.3.0</version>
         </dependency>
         
         <dependency>
@@ -138,7 +134,8 @@
                         </exclude>
                     </excludes>
                 </configuration>
-            </plugin>            <plugin>
+            </plugin>            
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.11.0</version>

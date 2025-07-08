@@ -1,13 +1,13 @@
 package com.ptit.service.impl;
 
 import com.cloudinary.Cloudinary;
-import com.cloudinary.utils.ObjectUtils;
 import com.ptit.service.CloudinaryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 @Service
@@ -20,7 +20,11 @@ public class CloudinaryServiceImpl implements CloudinaryService {
     @SuppressWarnings("unchecked")
     public Map<String, Object> uploadFile(MultipartFile file, String folder) {
         try {
-            Map<String, Object> uploadParams = ObjectUtils.asMap("folder", folder, "resource_type", "image");
+            Map<String, Object> uploadParams = new HashMap<>();
+            uploadParams.put("folder", folder);
+            uploadParams.put("resource_type", "image");
+            uploadParams.put("use_filename", true);
+            uploadParams.put("unique_filename", false);
             
             return cloudinary.uploader().upload(file.getBytes(), uploadParams);
         } catch (IOException e) {
@@ -30,13 +34,18 @@ public class CloudinaryServiceImpl implements CloudinaryService {
 
     @Override
     public String getImageUrl(String publicId) {
-        return cloudinary.url().secure(true).generate(publicId);
+        return cloudinary.url()
+                .secure(true)
+                .format("auto")
+                .generate(publicId);
     }
 
     @Override
     public void deleteFile(String publicId) {
         try {
-            cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
+            Map<String, Object> deleteParams = new HashMap<>();
+            deleteParams.put("resource_type", "image");
+            cloudinary.uploader().destroy(publicId, deleteParams);
         } catch (IOException e) {
             throw new RuntimeException("Failed to delete file from Cloudinary", e);
         }
