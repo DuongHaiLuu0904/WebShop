@@ -406,16 +406,3 @@ mvn test jacoco:report
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 👨‍💻 Author
-
-- **Student Name** - Dương Hải Lưu
-- **Course** - SOF306 - Java Web Programming
-- **Assignment** - Final Project
-
-## 📞 Support
-
-For support and questions:
-- **Email**: hailuu0904@gmail.com
----
-
-**WebShop** - A complete e-commerce solution built with Spring Boot 💻🛒
