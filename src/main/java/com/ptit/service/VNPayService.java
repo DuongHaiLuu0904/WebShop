@@ -86,7 +86,7 @@ public class VNPayService {
             }
         }
         
-        // Remove last '&' and add secure hash
+        // Xóa ký tự '&' cuối cùng và thêm secure hash
         if (query.length() > 0) {
             query.setLength(query.length() - 1);
         }
@@ -102,7 +102,7 @@ public class VNPayService {
         System.out.println("=== VNPay processReturn ===");
         Map<String, String> fields = new HashMap<>();
 
-        // Collect all parameters
+        // Thu thập tất cả các tham số
         for (Enumeration<String> params = request.getParameterNames(); params.hasMoreElements();) {
             String fieldName = params.nextElement();
             String fieldValue = request.getParameter(fieldName);

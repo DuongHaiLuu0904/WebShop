@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.repository.query.Param;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Controller;
@@ -31,7 +32,8 @@ public class AuthController {
     CustomerService customerService;
 
     @Autowired
-    MailerService mailer;
+    @Qualifier("mailerService")
+    MailerService mailerService;
 
     @Autowired
     CategoryService categoryService;
@@ -135,7 +137,7 @@ public class AuthController {
             String token = RandomString.make(50);
             customerService.updateToken(token, email);
             String resetLink = getSiteURL(request) + "/auth/reset-password?token=" + token;
-            mailer.sendEmail(email, resetLink);
+            mailerService.sendEmail(email, resetLink);
             model.addAttribute("message", "We have sent a reset password link to your email. "
                     + "If you don't see the email, check your spam folder.");
         } catch (MessagingException e) {
