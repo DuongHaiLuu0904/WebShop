@@ -15,7 +15,10 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 import org.springframework.stereotype.Service;
 
 import com.ptit.dao.CustomerDAO;
+import com.ptit.dao.RoleDAO;
 import com.ptit.entity.Customers;
+import com.ptit.entity.Role;
+import com.ptit.entity.Authority;
 
 import java.util.List;
 
@@ -24,6 +27,12 @@ public class CustomerService {
 
     @Autowired
     CustomerDAO adao;
+
+    @Autowired
+    RoleDAO roleDAO;
+
+    @Autowired
+    AuthorityService authorityService;
 
     @Autowired
     @Lazy
@@ -129,6 +138,26 @@ public class CustomerService {
             
             // Lưu customer mới vào database
             existingCustomer = adao.save(existingCustomer);
+            
+            // Tạo authority mặc định với role 'CUST' cho user OAuth2 mới
+            try {
+                Role customerRole = roleDAO.findById("CUST").orElse(null);
+                if (customerRole != null) {
+                    Authority authority = new Authority();
+                    // Set customer và role thông qua reflection
+                    java.lang.reflect.Field customerField = Authority.class.getDeclaredField("customer");
+                    customerField.setAccessible(true);
+                    customerField.set(authority, existingCustomer);
+                    
+                    java.lang.reflect.Field roleField = Authority.class.getDeclaredField("role");
+                    roleField.setAccessible(true);
+                    roleField.set(authority, customerRole);
+                    
+                    authorityService.create(authority);
+                }
+            } catch (Exception e) {
+                System.out.println("Error creating default authority for OAuth2 user: " + e.getMessage());
+            }
         } 
         else {
             if (fullname != null && !fullname.equals(existingCustomer.getFullname())) {

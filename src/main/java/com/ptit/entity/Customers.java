@@ -103,6 +103,9 @@ public class Customers implements Serializable {
 
     // Chỉnh sửa phương thức getAuthorities để trả về danh sách quyền
     public Collection<GrantedAuthority> getAuthorities() {
+        if (authorities == null) {
+            return List.of(new SimpleGrantedAuthority("ROLE_CUST"));
+        }
         return authorities.stream()
                 .map(authority -> new SimpleGrantedAuthority("ROLE_" + authority.getRole().getId()))
                 .collect(Collectors.toList());
