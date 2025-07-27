@@ -48,11 +48,6 @@ public class HomeController {
         return "index";
     }
 
-    @RequestMapping({"/admin", "/admin/index"})
-    public String admin(Model model) {
-        return "redirect:/admin/index.html";
-    }
-
     @RequestMapping("about")
     public String about() {
         return "about";

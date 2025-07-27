@@ -101,14 +101,42 @@ public class Customers implements Serializable {
         this.password = password;
     }
 
-    // Chỉnh sửa phương thức getAuthorities để trả về danh sách quyền
+    // Phương thức trả về quyền cao nhất mà user có
     public Collection<GrantedAuthority> getAuthorities() {
-        if (authorities == null) {
+        if (authorities == null || authorities.isEmpty()) {
             return List.of(new SimpleGrantedAuthority("ROLE_CUST"));
         }
-        return authorities.stream()
-                .map(authority -> new SimpleGrantedAuthority("ROLE_" + authority.getRole().getId()))
-                .collect(Collectors.toList());
+        
+        // Tìm quyền cao nhất: DIRE > STAF > CUST
+        String highestRole = getHighestRole();
+        String grantedAuthority = "ROLE_" + highestRole;
+        
+        return List.of(new SimpleGrantedAuthority(grantedAuthority));
+    }
+    
+    // Method helper để tìm quyền cao nhất
+    private String getHighestRole() {
+        if (authorities == null || authorities.isEmpty()) {
+            return "CUST"; // Default role
+        }
+        
+        // Kiểm tra theo thứ tự ưu tiên: DIRE > STAF > CUST
+        boolean hasDire = authorities.stream().anyMatch(auth -> "DIRE".equals(auth.getRole().getId()));
+        if (hasDire) {
+            return "DIRE";
+        }
+        
+        boolean hasStaf = authorities.stream().anyMatch(auth -> "STAF".equals(auth.getRole().getId()));
+        if (hasStaf) {
+            return "STAF";
+        }
+        
+        boolean hasCust = authorities.stream().anyMatch(auth -> "CUST".equals(auth.getRole().getId()));
+        if (hasCust) {
+            return "CUST";
+        }
+        
+        return "CUST"; // Fallback
     }
 
     public Integer getId() {

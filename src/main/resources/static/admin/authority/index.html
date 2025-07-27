@@ -25,16 +25,16 @@
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="acc in pager.admins">
-                    <td class="align-center">{{acc.username}}</td>
-                    <td class="align-center">{{acc.fullname}}</td>
-                    <td class="align-center">{{acc.email}}</td>
+                <tr ng-repeat="user in pager.users">
+                    <td class="align-center">{{user.username}}</td>
+                    <td class="align-center">{{user.fullname}}</td>
+                    <td class="align-center">{{user.email}}</td>
                     <th ng-repeat="role in roles" class="align-center text-center" style="width:10%">
                         <div class="custom-control custom-checkbox">
                             <input type="checkbox" class="custom-control-input"
-                                id="authority-{{acc.username}}-{{role.id}}" ng-checked="authority_of(acc,role)"
-                                ng-click="authority_changed(acc,role)">
-                            <label class="custom-control-label" for="authority-{{acc.username}}-{{role.id}}"></label>
+                                id="authority-{{user.username}}-{{role.id}}" ng-checked="authority_of(user,role)"
+                                ng-click="authority_changed(user,role)">
+                            <label class="custom-control-label" for="authority-{{user.username}}-{{role.id}}"></label>
                         </div>
                     </th>
                 </tr>

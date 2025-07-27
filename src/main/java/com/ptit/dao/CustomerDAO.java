@@ -14,8 +14,8 @@ public interface CustomerDAO extends JpaRepository<Customers, Integer> {
     @Query("SELECT a FROM Customers a WHERE a.username =?1 and a.password=?2")
     Customers getCustomer(String username, String password);
 
-    // Tìm theo username
-    @Query("SELECT a FROM Customers a WHERE a.username=?1")
+    // Tìm theo username với tất cả authorities
+    @Query("SELECT DISTINCT c FROM Customers c LEFT JOIN FETCH c.authorities a LEFT JOIN FETCH a.role WHERE c.username=?1")
     Customers findByUsername(String username);
 
     // Phuc vu viec gui mail

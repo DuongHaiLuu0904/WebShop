@@ -28,4 +28,8 @@ public class Authority implements Serializable {
     public Role getRole() {
         return role;
     }
+    
+    public Customers getCustomer() {
+        return customer;
+    }
 }

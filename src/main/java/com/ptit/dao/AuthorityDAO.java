@@ -9,6 +9,6 @@ import com.ptit.entity.Customers;
 import java.util.List;
 
 public interface AuthorityDAO extends JpaRepository<Authority, Integer> {
-    @Query("SELECT DISTINCT a FROM Authority a WHERE a.customer IN ?1")
+    @Query("SELECT DISTINCT a FROM Authority a LEFT JOIN FETCH a.customer LEFT JOIN FETCH a.role WHERE a.customer IN ?1")
     List<Authority> authoritiesOf(List<Customers> customers);
 }

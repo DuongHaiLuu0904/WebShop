@@ -20,6 +20,9 @@ import com.ptit.entity.Customers;
 import com.ptit.entity.Role;
 import com.ptit.entity.Authority;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+
 import java.util.List;
 
 @Service
@@ -38,6 +41,9 @@ public class CustomerService {
     @Lazy
     BCryptPasswordEncoder pe;    
     
+    @PersistenceContext
+    private EntityManager entityManager;    
+    
     @Cacheable(value = "customers", key = "#id", unless="#result == null")
     public Customers findById(Integer id) {
         return adao.findById(id).orElse(null);
@@ -46,6 +52,11 @@ public class CustomerService {
     @Cacheable(value = "customers", key = "'username:' + #username", unless="#result == null")
     public Customers findByUsername(String username) {
         return adao.findByUsername(username);
+    }
+    
+    @CacheEvict(value = "customers", key = "'username:' + #username")
+    public void clearUserCache(String username) {
+        // Method để clear cache cho specific user
     }
     
     @Cacheable(value = "customers", key = "'email:' + #email", unless="#result == null")
